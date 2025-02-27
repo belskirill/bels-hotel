@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Query, Body
+from dependencies import PaginationDep
 from schemas.hotels import Hotel, HotelPatch
+
 router = APIRouter(prefix="/hotels", tags=["hotels"])
-
-
 
 hotels = [
     {'id': 1, 'title': 'Sochi', 'name': 'sochi'},
@@ -25,17 +25,11 @@ hotels = [
 
 @router.get('')
 def get_hotels(
-        id: int | None = Query(
-            default=None,
-            description='Айдишник'
-),
-        title: str | None = Query(
-            default=None,
-            description='Название отеля'
-),
-        page: int | None = Query(None, gt=0, description='Номер страницы'),
-        per_page: int | None = Query(None, gt=0,  le=15, description='Кол-во элементов на странице'),
-):
+            pagination: PaginationDep,
+            id: int | None = Query(default=None, description='Айдишник'),
+            title: str | None = Query(default=None, description='Название отеля')
+        ):
+
     hotel_ = []
     for hotel in hotels:
         if id and hotel['id'] != id:
@@ -43,8 +37,8 @@ def get_hotels(
         if title and hotel['title'] != title:
             continue
         hotel_.append(hotel)
-    if page and per_page:
-        return hotel_[per_page * (page-1):][:per_page]
+    if pagination.page and pagination.per_page:
+        return hotel_[pagination.per_page * (pagination.page - 1):][:pagination.per_page]
     return hotel_
 
 
@@ -58,16 +52,17 @@ def delete_hotel(hotel_id: int):
 
 
 @router.post('')
-def create_hotel(hotel_data: Hotel = Body(openapi_examples=
-    {'1': {'summary': "Sochi", "value": {
-    'title': 'Отель сочи',
-    'name': 'sochi_u_morya'
-    }},'2': {'summary': "Dubai", "value": {
-    'title': 'Отель дубая',
-    'name': 'dubai_otel_fontan'
-    }},
-})
-):
+def create_hotel(
+        hotel_data: Hotel = Body(openapi_examples=
+                  {'1': {'summary': "Sochi", "value": {
+                      'title': 'Отель сочи',
+                      'name': 'sochi_u_morya'
+                  }}, '2': {'summary': "Dubai", "value": {
+                      'title': 'Отель дубая',
+                      'name': 'dubai_otel_fontan'
+                  }},
+                   })
+                 ):
     global hotels
     hotels.append({
         'id': hotels[-1]['id'] + 1,
@@ -77,6 +72,7 @@ def create_hotel(hotel_data: Hotel = Body(openapi_examples=
     return {
         'status': 'OK'
     }
+
 
 # все параметры
 @router.put('/{hotel_id}')
@@ -90,16 +86,12 @@ def update_hotel(hotel_id: int, hotel_data: Hotel):
     }
 
 
-
-
-
 @router.patch('/{hotel_id}',
-           summary='Частичное обновлние данных об отеле!',
-           description='Тут мы частично обновлеям данные об отеле: можно отправить name, а можно title')
-def partially_update_hotel(
-        hotel_id: int,
-        hotel_data: HotelPatch
-):
+              summary='Частичное обновлние данных об отеле!',
+              description='Тут мы частично обновлеям данные об отеле: можно отправить name, а можно title')
+def partially_update_hotel(hotel_id: int,
+                           hotel_data: HotelPatch):
+
     global hotels
     hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
     if hotel_data.title:
@@ -107,5 +99,5 @@ def partially_update_hotel(
     if hotel_data.name:
         hotel['name'] = hotel_data.name
     return {
-            'status': 'OK'
+        'status': 'OK'
     }
