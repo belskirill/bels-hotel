@@ -27,21 +27,32 @@ hotels = [
 def get_hotels(
         id: int | None = Query(
             default=None,
-            description='Айдишник'),
-
+            description='Айдишник'
+),
         title: str | None = Query(
             default=None,
-            description='Название отеля'),
-
-        page: int | None = Query(1, description='Номер страницы'),
-        per_page: int | None = Query(3, le=15, description='Кол-во элементов на странице'),
+            description='Название отеля'
+),
+        page: int | None = Query(None, gt=0, description='Номер страницы'),
+        per_page: int | None = Query(None, gt=0,  le=15, description='Кол-во элементов на странице'),
 ):
-    start = (page - 1) * per_page
-    end = start + per_page
-    pagination_hotel = hotels[start:end]
-    if id or title:
-        return [value for value in pagination_hotel if value['id'] == id or value['title'] == title]
+    # start = (page - 1) * per_page
+    # end = start + per_page
+    # pagination_hotel = hotels[start:end]
+    # if id or title:
+    #     return [value for value in pagination_hotel if value['id'] == id or value['title'] == title]
 
+
+    hotel_ = []
+    for hotel in hotels:
+        if id and hotel['id'] != id:
+            continue
+        if title and hotel['title'] != title:
+            continue
+        hotel_.append(hotel)
+    if page and per_page:
+        return hotel_[per_page * (page-1):][:per_page]
+    return hotel_
 
 @router.delete('/{hotel_id}')
 def delete_hotel(hotel_id: int):
