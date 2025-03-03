@@ -4,6 +4,7 @@ from fastapi import APIRouter, Query, Body
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker, engine
 from src.models.hotels import HotelsOrm
+from src.repositories.hotels import HotelRepository
 from src.schemas.hotels import Hotel, HotelPatch
 from sqlalchemy import insert, select
 
@@ -19,20 +20,12 @@ async def get_hotels(
         ):
     per_page = pagination.per_page or 5
     async with async_session_maker() as session:
-        query = select(HotelsOrm)
-        if location:
-            query = query.filter(HotelsOrm.location.ilike(f'%{location.strip()}%'))
-        if title:
-            query = query.filter(HotelsOrm.title.ilike(f'%{title}%'))
-        query = (
-            query
-            .limit(per_page)
-            .offset(per_page * (pagination.page - 1))
+        return await HotelRepository(session).get_all(
+            location=location,
+            title=title,
+            limit=per_page or 5 ,
+            offset=per_page * (pagination.page - 1)
         )
-        results = await session.execute(query)
-        hotels = results.scalars().all()
-        return hotels
-
 
 
 @router.delete('/{hotel_id}')
@@ -79,15 +72,7 @@ def update_hotel(hotel_id: int, hotel_data: Hotel):
     }
 
 
-@router.get('/location')
-async def get_location(
-        location: str = Query(ge=1, le=30)
-):
-    async with async_session_maker() as session:
-        query = select(HotelsOrm).filter(HotelsOrm.location.ilike(f'%{location.strip()}%'))
-        res = await session.execute(query)
-        hotel_loc = res.scalars().all()
-        return hotel_loc
+
 
 
 @router.patch('/{hotel_id}',
