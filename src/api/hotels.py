@@ -50,13 +50,12 @@ async def create_hotel(
                    })
                  ):
     async with async_session_maker() as session:
-        stmt_add_hotel = insert(HotelsOrm).values(**hotel_data.model_dump())
-        print(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
-        await session.execute(stmt_add_hotel)
+        hotel = await HotelRepository(session).add_data(hotel_data)
         await session.commit()
 
     return {
-        'status': 'OK'
+        'status': 'OK',
+        'data': hotel
     }
 
 

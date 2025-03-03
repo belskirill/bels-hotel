@@ -1,4 +1,6 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert
+
+from src.database import engine
 
 
 class BaseRepository:
@@ -17,3 +19,10 @@ class BaseRepository:
         query = select(self.model).filter_by(**filter_by)
         results = await self.session.execute(query)
         return results.scalars().one_or_none()
+
+
+    async def add_data(self, hotel_data):
+        stmt_add_hotel = insert(self.model).values(**hotel_data.model_dump())
+        log = str(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
+        await self.session.execute(stmt_add_hotel)
+        return log
