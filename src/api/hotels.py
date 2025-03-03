@@ -1,3 +1,5 @@
+from dataclasses import Field
+
 from fastapi import APIRouter, Query, Body
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker, engine
@@ -19,7 +21,7 @@ async def get_hotels(
     async with async_session_maker() as session:
         query = select(HotelsOrm)
         if location:
-            query = query.filter(HotelsOrm.location.ilike(f'%{location}%'))
+            query = query.filter(HotelsOrm.location.ilike(f'%{location.strip()}%'))
         if title:
             query = query.filter(HotelsOrm.title.ilike(f'%{title}%'))
         query = (
@@ -75,6 +77,17 @@ def update_hotel(hotel_id: int, hotel_data: Hotel):
     return {
         'status': 'OK'
     }
+
+
+@router.get('/location')
+async def get_location(
+        location: str = Query(ge=1, le=30)
+):
+    async with async_session_maker() as session:
+        query = select(HotelsOrm).filter(HotelsOrm.location.ilike(f'%{location.strip()}%'))
+        res = await session.execute(query)
+        hotel_loc = res.scalars().all()
+        return hotel_loc
 
 
 @router.patch('/{hotel_id}',
