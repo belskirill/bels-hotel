@@ -19,6 +19,7 @@ class BaseRepository:
         results = await self.session.execute(query)
         return results.scalars().all()
 
+
     async def get_one_or_none(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
         results = await self.session.execute(query)
@@ -33,11 +34,11 @@ class BaseRepository:
 
 
     async def edit(self, hotel_data, **filter_by):
-        stmt_add_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump()).returning(self.model)
-        results = await self.session.execute(stmt_add_hotel)
-        return results.scalars().one()
+        stmt_add_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump())
+        await self.session.execute(stmt_add_hotel)
+
 
     async def delete(self, **filter_by):
-        stmt_add_hotel = delete(self.model).filter_by(**filter_by).returning(self.model)
-        results = await self.session.execute(stmt_add_hotel)
-        return results.scalars().one()
+        stmt_add_hotel = delete(self.model).filter_by(**filter_by)
+        await self.session.execute(stmt_add_hotel)
+

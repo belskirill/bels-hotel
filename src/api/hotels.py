@@ -24,18 +24,6 @@ async def get_hotels(
         )
 
 
-@router.delete('/{hotel_id}')
-async def delete_hotel(hotel_id: int):
-
-    async with async_session_maker() as session:
-        hotel = await HotelRepository(session).delete(id=hotel_id)
-        await session.commit()
-    return {
-        'status': 'OK',
-        'data': hotel
-    }
-
-
 @router.post('')
 async def create_hotel(
         hotel_data: Hotel = Body(openapi_examples=
@@ -58,22 +46,6 @@ async def create_hotel(
     }
 
 
-# все параметры
-@router.put('/{hotel_id}')
-async def update_hotel(hotel_id: int, hotel_data: Hotel):
-    async with async_session_maker() as session:
-        hotel = await HotelRepository(session).edit(hotel_data, id=hotel_id)
-        await session.commit()
-
-    return {
-        'status': 'OK',
-        'data': hotel
-    }
-
-
-
-
-
 @router.patch('/{hotel_id}',
               summary='Частичное обновлние данных об отеле!',
               description='Тут мы частично обновлеям данные об отеле: можно отправить name, а можно title')
@@ -86,6 +58,28 @@ def partially_update_hotel(hotel_id: int,
         hotel['title'] = hotel_data.title
     if hotel_data.name:
         hotel['name'] = hotel_data.name
+    return {
+        'status': 'OK'
+    }
+
+
+@router.put('/{hotel_id}')
+async def update_hotel(hotel_id: int, hotel_data: Hotel):
+    async with async_session_maker() as session:
+        await HotelRepository(session).edit(hotel_data, id=hotel_id)
+        await session.commit()
+
+    return {
+        'status': 'OK'
+    }
+
+
+@router.delete('/{hotel_id}')
+async def delete_hotel(hotel_id: int):
+
+    async with async_session_maker() as session:
+        await HotelRepository(session).delete(id=hotel_id)
+        await session.commit()
     return {
         'status': 'OK'
     }
