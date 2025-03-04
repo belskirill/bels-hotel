@@ -34,11 +34,11 @@ class BaseRepository:
 
 
     async def edit(self, hotel_data, **filter_by):
-        stmt_add_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump())
-        await self.session.execute(stmt_add_hotel)
+        stmt_edit_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump())
+        await self.session.execute(stmt_edit_hotel)
 
 
     async def delete(self, **filter_by):
-        stmt_add_hotel = delete(self.model).filter_by(**filter_by)
-        await self.session.execute(stmt_add_hotel)
+        stmt_del_hotel = delete(self.model).filter_by(**filter_by)
+        await self.session.execute(stmt_del_hotel)
 
