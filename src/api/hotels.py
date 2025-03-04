@@ -24,6 +24,13 @@ async def get_hotels(
         )
 
 
+@router.get('/{hotel_id]')
+async def get_hotel_by_id(hotel_id: int):
+    async with async_session_maker() as session:
+        hotel = await HotelRepository(session).get_one_or_none(id=hotel_id)
+    return hotel
+
+
 @router.post('')
 async def create_hotel(
         hotel_data: Hotel = Body(openapi_examples=
@@ -49,15 +56,12 @@ async def create_hotel(
 @router.patch('/{hotel_id}',
               summary='Частичное обновлние данных об отеле!',
               description='Тут мы частично обновлеям данные об отеле: можно отправить name, а можно title')
-def partially_update_hotel(hotel_id: int,
+async def partially_update_hotel(hotel_id: int,
                            hotel_data: HotelPatch):
+    async with async_session_maker() as session:
+        await HotelRepository(session).edit(hotel_data, id=hotel_id)
+        await session.commit()
 
-    global hotels
-    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
-    if hotel_data.title:
-        hotel['title'] = hotel_data.title
-    if hotel_data.name:
-        hotel['name'] = hotel_data.name
     return {
         'status': 'OK'
     }
