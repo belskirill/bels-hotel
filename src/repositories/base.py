@@ -34,7 +34,11 @@ class BaseRepository:
 
 
     async def edit(self, hotel_data, **filter_by):
-        stmt_edit_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump())
+        stmt_edit_hotel = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .values(**hotel_data.model_dump(exclude_unset=True))
+        )
         await self.session.execute(stmt_edit_hotel)
 
 
