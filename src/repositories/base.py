@@ -22,7 +22,11 @@ class BaseRepository:
 
 
     async def add_data(self, hotel_data):
-        stmt_add_hotel = insert(self.model).values(**hotel_data.model_dump())
-        log = str(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
-        await self.session.execute(stmt_add_hotel)
-        return log
+        stmt_add_hotel = insert(self.model).values(**hotel_data.model_dump()).returning(self.model)
+        # log = str(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
+        results = await self.session.execute(stmt_add_hotel)
+        return results.scalars().one()
+
+
+    async def edit(self):
+        pass
