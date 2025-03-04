@@ -1,6 +1,10 @@
-from sqlalchemy import select, insert
+from fastapi import HTTPException
+
+from pygame.display import update
+from sqlalchemy import select, insert, update, delete
 
 from src.database import engine
+from src.models.hotels import HotelsOrm
 
 
 class BaseRepository:
@@ -28,5 +32,12 @@ class BaseRepository:
         return results.scalars().one()
 
 
-    async def edit(self):
-        pass
+    async def edit(self, hotel_data, **filter_by):
+        stmt_add_hotel = update(self.model).filter_by(**filter_by).values(**hotel_data.model_dump()).returning(self.model)
+        results = await self.session.execute(stmt_add_hotel)
+        return results.scalars().one()
+
+    async def delete(self, **filter_by):
+        stmt_add_hotel = delete(self.model).filter_by(**filter_by).returning(self.model)
+        results = await self.session.execute(stmt_add_hotel)
+        return results.scalars().one()
