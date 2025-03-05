@@ -2,10 +2,6 @@ from pygame.display import update
 from sqlalchemy import select, insert, update, delete
 from pydantic import BaseModel, ConfigDict
 
-from src.database import engine
-from src.models.hotels import HotelsOrm
-from src.schemas.hotels import Hotel
-
 
 class BaseRepository:
     model = None
