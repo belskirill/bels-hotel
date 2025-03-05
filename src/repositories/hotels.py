@@ -2,8 +2,12 @@ from src.models.hotels import HotelsOrm
 from src.repositories.base import BaseRepository
 from sqlalchemy import select
 
+from src.schemas.hotels import Hotel
+
+
 class HotelRepository(BaseRepository):
     model = HotelsOrm
+    schema = Hotel
 
 
     async def get_all(
