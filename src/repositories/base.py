@@ -27,8 +27,8 @@ class BaseRepository:
         return self.schema.model_validate(model)
 
 
-    async def add_data(self, hotel_data):
-        stmt_add_hotel = insert(self.model).values(**hotel_data.model_dump()).returning(self.model)
+    async def add_data(self, data):
+        stmt_add_hotel = insert(self.model).values(**data.model_dump()).returning(self.model)
         # log = str(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
         results = await self.session.execute(stmt_add_hotel)
         return results.scalars().one()

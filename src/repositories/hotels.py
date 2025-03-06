@@ -29,3 +29,6 @@ class HotelRepository(BaseRepository):
         )
         results = await self.session.execute(query)
         return results.scalars().all()
+
+
+HotelRepository.add_data()
