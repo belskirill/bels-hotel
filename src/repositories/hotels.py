@@ -31,4 +31,3 @@ class HotelRepository(BaseRepository):
         return results.scalars().all()
 
 
-HotelRepository.add_data()
