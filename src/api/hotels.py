@@ -52,7 +52,7 @@ async def create_hotel(
 
 
 @router.patch('/{hotel_id}',
-              summary='Частичное обновлние данных об отеле!',
+              summary='update hotel data',
               description='Тут мы частично обновлеям данные об отеле: можно отправить name, а можно title')
 async def partially_update_hotel(hotel_id: int,
                            hotel_data: HotelPatch):
