@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class BaseRepository:
     model = None
     schema: BaseModel = None
-    model_config = ConfigDict(from_attributes=True)
+
 
     def __init__(self, session):
         self.session = session
@@ -24,7 +24,7 @@ class BaseRepository:
         model = results.scalars().one_or_none()
         if not model:
             return None
-        return self.schema.model_validate(model)
+        return self.schema.model_validate(model, from_attributes=True)
 
 
     async def add_data(self, data):
