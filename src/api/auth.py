@@ -1,5 +1,3 @@
-from http.client import responses
-
 from fastapi import APIRouter, HTTPException, Response
 
 from src.api.dependencies import UserIdDep
@@ -46,7 +44,7 @@ async def get_me(
     return user
 
 
-@router.delete('/logout')
+@router.post('/logout')
 async def logout_user(response: Response):
         response.delete_cookie('access_token')
         return {
