@@ -7,7 +7,6 @@ class BaseRepository:
     model = None
     schema: BaseModel = None
 
-    exlude_unset = True
 
 
     def __init__(self, session):
@@ -33,12 +32,11 @@ class BaseRepository:
             return None
         return self.schema.model_validate(model, from_attributes=True)
 
-
-    async def add_data(self, data):
-        stmt_add_hotel = insert(self.model).values(**data.model_dump()).returning(self.model)
-        # log = str(stmt_add_hotel.compile(engine, compile_kwargs={"literal_binds": True}))
-        results = await self.session.execute(stmt_add_hotel)
-        return results.scalars().one()
+    async def add_data(self, data: BaseModel):
+        add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
+        result = await self.session.execute(add_data_stmt)
+        model = result.scalars().one()
+        return self.schema.model_validate(model)
 
 
     async def edit(self, hotel_data, **filter_by):
