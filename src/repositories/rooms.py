@@ -1,32 +1,24 @@
+from datetime import date
+from src.database import engine
+from src.models.bookings import BookingsOrm
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
+from src.repositories.utils import rooms_ids_for_booking
 from src.schemas.rooms import Rooms
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 
 class RoomsRepository(BaseRepository):
     model = RoomsOrm
     schema = Rooms
 
+    async def get_filtered_by_time(
+            self,
+            hotel_id,
+            date_from: date,
+            date_to: date
+    ):
+        rooms_ids_to_get = rooms_ids_for_booking(date_from, date_to, hotel_id)
 
-    # async def get_all(
-    #         self,
-    #         hotel_id,
-    #         title,
-    #         description,
-    #         price,
-    #         quantity,
-    # ):
-    #     query = select(RoomsOrm)
-    #     if hotel_id:
-    #         query = query.filter(RoomsOrm.hotel_id == hotel_id)
-    #     if title:
-    #         query = query.filter(RoomsOrm.title.ilike(f'%{title}%'))
-    #     if description:
-    #         query = query.filter(RoomsOrm.description.ilike(f'%{description}%'))
-    #     if price:
-    #         query = query.filter(RoomsOrm.price == price)
-    #     if quantity:
-    #         query = query.filter(RoomsOrm.quantity == quantity)
-    #     results = await self.session.execute(query)
-    #     return results.scalars().all()
+
+        return await self.get_filtered(RoomsOrm.id.in_(rooms_ids_to_get))

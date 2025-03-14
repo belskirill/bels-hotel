@@ -1,23 +1,24 @@
 from fastapi import APIRouter, Query, Body
 from src.api.dependencies import PaginationDep, DBDep
 from src.schemas.hotels import HotelPatch, HotelAdd
+from datetime import date
 
 router = APIRouter(prefix="/hotels", tags=["hotels"])
 
 
 @router.get('')
 async def get_hotels(
+            date_to: date,
+            date_from: date,
             pagination: PaginationDep,
             db: DBDep,
             location: str | None = Query(default=None, description='location'),
             title: str | None = Query(default=None, description='Название отеля')
         ):
-    per_page = pagination.per_page or 5
-    return await db.hotels.get_all(
-        location=location,
-        title=title,
-        limit=per_page or 5,
-        offset=per_page * (pagination.page - 1)
+    # per_page = pagination.per_page or 5
+    return await db.hotels.get_filtered_by_time(
+        date_from=date_from,
+        date_to=date_to,
     )
 
 
