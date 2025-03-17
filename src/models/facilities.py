@@ -2,7 +2,7 @@ from datetime import date
 
 from src.database import Base
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.ext.hybrid import hybrid_property
+
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 

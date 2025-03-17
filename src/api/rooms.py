@@ -3,6 +3,7 @@ from datetime import date
 from fastapi import APIRouter, Body, Query
 
 from src.api.dependencies import DBDep
+from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import RoomsAdd, RoomsPath, RoomsAddRequests, RoomsPathRequests
 
 router = APIRouter(prefix="/hotels", tags=["rooms"])
@@ -23,27 +24,15 @@ async def get_room_by_id(rooms_id: int, hotel_id: int, db: DBDep):
     return await db.rooms.get_one_or_none(id=rooms_id, hotel_id=hotel_id)
 
 
-@router.post('/{hotel_id}/room')
-async def create_room(
-        db: DBDep,
-        hotel_id: int,
-        rooms_data: RoomsAddRequests = Body(openapi_examples=
-                  {'1': {'summary': '1', "value": {
-                      'title': 'luxary',
-                      'description': 'all unclusive',
-                      'price': 100000,
-                      'quantity': 1
-                  }}
-                   })
-                 ):
-    _rooms_data = RoomsAdd(hotel_id=hotel_id, **rooms_data.model_dump())
-    rooms = await db.rooms.add_data(_rooms_data)
+@router.post("/{hotel_id}/rooms")
+async def create_room(hotel_id: int, db: DBDep, room_data: RoomsAddRequests = Body()):
+    _room_data = RoomsAdd(hotel_id=hotel_id, **room_data.model_dump())
+    room = await db.rooms.add_data(_room_data)
+    rooms_facilities_data = [RoomsFacilityAdd(room_id=room.id, facility_id=f_id) for f_id in room_data.facilities_ids]
+    print(rooms_facilities_data)
+    await db.rooms_facilities.add_bulk(rooms_facilities_data)
     await db.commit()
-
-    return {
-        'status': 'OK',
-        'data': rooms
-    }
+    return {"status": "OK", "data": room}
 
 
 @router.patch('/{hotel_id}/rooms/{rooms_id}',
@@ -56,6 +45,9 @@ async def partially_update_room(
                 rooms_data: RoomsPathRequests):
     _rooms_data = RoomsPath(hotel_id=hotel_id, **rooms_data.model_dump(exclude_unset=True))
     await db.rooms.edit(_rooms_data, id=rooms_id, hotel_id=hotel_id)
+
+    data_edit_rooms_facility = [RoomsFacilityAdd(room_id=rooms_id, facility_id=f_id) for f_id in rooms_data.facilities_ids]
+    await db.rooms_facilities.edit_bulk(data_edit_rooms_facility, room_id=rooms_id)
     await db.commit()
 
     return {
