@@ -43,11 +43,15 @@ async def partially_update_room(
                 hotel_id: int,
                 rooms_id: int,
                 rooms_data: RoomsPathRequests):
-    _rooms_data = RoomsPath(hotel_id=hotel_id, **rooms_data.model_dump(exclude_unset=True))
+    _room_data_dict = rooms_data.model_dump(exclude_unset=True)
+    _rooms_data = RoomsPath(hotel_id=hotel_id, **_room_data_dict)
     await db.rooms.edit(_rooms_data, id=rooms_id, hotel_id=hotel_id)
 
-    data_edit_rooms_facility = [RoomsFacilityAdd(room_id=rooms_id, facility_id=f_id) for f_id in rooms_data.facilities_ids]
-    await db.rooms_facilities.edit_bulk(data_edit_rooms_facility, room_id=rooms_id)
+
+    if 'facilities_ids' in _room_data_dict:
+        await db.rooms_facilities.set_room_facility(room_id=rooms_id, facilities_ids=_room_data_dict['facilities_ids'])
+
+
     await db.commit()
 
     return {
@@ -59,6 +63,8 @@ async def partially_update_room(
 async def update_room(db: DBDep, hotel_id: int, rooms_id: int, rooms_data: RoomsAddRequests):
     _rooms_data = RoomsAdd(hotel_id=hotel_id, **rooms_data.model_dump())
     await db.rooms.edit(_rooms_data, id=rooms_id)
+
+    await db.rooms_facilities.set_room_facility(room_id=rooms_id, facilities_ids=rooms_data.facilities_ids)
     await db.commit()
 
     return {

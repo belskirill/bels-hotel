@@ -4,6 +4,8 @@ from typing import Annotated
 from pydantic import BaseModel, Field, ConfigDict
 from fastapi import Depends
 
+from src.schemas.facilities import Facility
+
 
 class RoomsAddRequests(BaseModel):
     title: str
@@ -23,6 +25,10 @@ class Rooms(RoomsAdd):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class RoomWithRels(Rooms):
+    facilities: list[Facility]
 
 
 

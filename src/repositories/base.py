@@ -3,6 +3,7 @@ from asyncio.unix_events import BaseChildWatcher
 from pygame.display import update
 from sqlalchemy import select, insert, update, delete
 from pydantic import BaseModel, ConfigDict
+from sqlalchemy.orm import selectinload, joinedload
 
 
 class BaseRepository:
@@ -53,13 +54,7 @@ class BaseRepository:
         await self.session.execute(add_data_stmt)
 
 
-    async def edit_bulk(self, hotel_data: list[BaseModel], **filter_by):
-        stmt_edit_hotel = (
-            update(self.model)
-            .filter_by(**filter_by)
-            .values([item.model_dump() for item in hotel_data])
-        )
-        await self.session.execute(stmt_edit_hotel)
+
 
 
     async def edit(self, hotel_data, **filter_by):
