@@ -35,3 +35,21 @@ class RoomsRepository(BaseRepository):
         result = await self.session.execute(query)
 
         return [RoomWithRels.model_validate(model) for model in result.unique().scalars().all()]
+
+
+    async def get_one_or_none(self, **filter_by):
+        query = select(self.model.id).filter_by(**filter_by)
+
+        two_query = (
+            select(self.model)
+            .options(selectinload(self.model.facilities))
+            .filter(self.model.id.in_(query))
+
+        )
+        results = await self.session.execute(two_query)
+
+
+        model = results.scalars().one_or_none()
+        if not model:
+            return None
+        return RoomWithRels.model_validate(model, from_attributes=True)
