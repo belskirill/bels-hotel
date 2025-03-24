@@ -2,12 +2,13 @@ from sqlalchemy import select
 
 from src.models.users import UsersOrm
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import UserDataMapper
 from src.schemas.users import User, UserWithHashPassword
 from pydantic import EmailStr
 
 class UsersRepository(BaseRepository):
     model = UsersOrm
-    schema = User
+    mapper = UserDataMapper
 
 
     async def get_user_with_hashed_password(self, email: EmailStr):

@@ -1,18 +1,15 @@
 from datetime import date
-from src.database import engine
-from src.models.bookings import BookingsOrm
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import RoomDataMapper
 from src.repositories.utils import rooms_ids_for_booking
-from src.schemas.rooms import Rooms
-from sqlalchemy import select, func
 from src.schemas.rooms import Rooms, RoomWithRels
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, joinedload
 
 class RoomsRepository(BaseRepository):
     model = RoomsOrm
-    schema = Rooms
+    mapper = RoomDataMapper
 
     async def get_filtered_by_time(
             self,
@@ -38,15 +35,14 @@ class RoomsRepository(BaseRepository):
 
 
     async def get_one_or_none(self, **filter_by):
-        query = select(self.model.id).filter_by(**filter_by)
-
-        two_query = (
+        query = (
             select(self.model)
             .options(selectinload(self.model.facilities))
-            .filter(self.model.id.in_(query))
-
+            .filter_by(**filter_by)
         )
-        results = await self.session.execute(two_query)
+
+
+        results = await self.session.execute(query)
 
 
         model = results.scalars().one_or_none()

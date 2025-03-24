@@ -19,7 +19,7 @@ class FacilitiesOrm(Base):
         back_populates="facilities",
         secondary="room_facilities",
     )
-
+@classmethod
 
 class RoomsFacilitiesOrm(Base):
     __tablename__ = 'room_facilities'

@@ -1,17 +1,15 @@
 from src.models.facilities import FacilitiesOrm, RoomsFacilitiesOrm
-from src.models.hotels import HotelsOrm
-from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
-from datetime import date
 
-from src.repositories.utils import rooms_ids_for_booking
-from src.schemas.facilities import Facility, RoomsFacility
-from src.schemas.hotels import Hotel
-from sqlalchemy import select, func, delete, insert
+
+from src.repositories.mappers.mappers import FacilityDataMapper
+from src.schemas.facilities import RoomsFacility
+
+from sqlalchemy import select, delete, insert
 
 class FacilityRepository(BaseRepository):
     model = FacilitiesOrm
-    schema = Facility
+    mapper = FacilityDataMapper
 
 
 

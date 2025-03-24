@@ -3,13 +3,13 @@ from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
 from datetime import date
 
+from src.repositories.mappers.mappers import HotelDataMapper
 from src.repositories.utils import rooms_ids_for_booking
-from src.schemas.hotels import Hotel
 from sqlalchemy import select, func
 
 class HotelRepository(BaseRepository):
     model = HotelsOrm
-    schema = Hotel
+    mapper = HotelDataMapper
 
 
     async def get_filtered_by_time(
@@ -42,5 +42,4 @@ class HotelRepository(BaseRepository):
 
         result = await self.session.execute(query)
 
-        return [Hotel.model_validate(hotel, from_attributes=True) for hotel in result.scalars().all()]
-
+        return [self.mapper.map_to_domain(hotel) for hotel in result.scalars().all()]

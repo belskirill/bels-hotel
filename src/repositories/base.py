@@ -5,10 +5,12 @@ from sqlalchemy import select, insert, update, delete
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import selectinload, joinedload
 
+from src.repositories.mappers.base import DataMapper
+
 
 class BaseRepository:
     model = None
-    schema: BaseModel = None
+    mapper: DataMapper = None
 
 
 
@@ -23,7 +25,7 @@ class BaseRepository:
             .filter(*filter)
         )
         results = await self.session.execute(query)
-        return [self.schema.model_validate(model) for model in results.scalars().all()]
+        return [self.mapper.map_to_domain(model) for model in results.scalars().all()]
 
     async def get_all(self, *args, **kwargs):
         return await self.get_filtered()
@@ -37,13 +39,13 @@ class BaseRepository:
         model = results.scalars().one_or_none()
         if not model:
             return None
-        return self.schema.model_validate(model, from_attributes=True)
+        return self.mapper.map_to_domain(model)
 
     async def add_data(self, data: BaseModel):
         add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
         result = await self.session.execute(add_data_stmt)
         model = result.scalars().one()
-        return self.schema.model_validate(model)
+        return self.mapper.map_to_domain(model)
 
 
     async def add_bulk(self, data: list[BaseModel]):
