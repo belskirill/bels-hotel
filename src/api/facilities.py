@@ -15,7 +15,7 @@ router = APIRouter(prefix="/facilities", tags=["facilities"])
 @router.get('')
 @cache(expire=10)
 async def get_facilities(
-        db: DBDep
+    db: DBDep
 ):
     print('GO TO THE DATABASE')
 
@@ -25,8 +25,8 @@ async def get_facilities(
 
 @router.post('')
 async def add_facility(
-        db: DBDep,
-        facility_data: FacilityAdd
+    db: DBDep,
+    facility_data: FacilityAdd
 ):
     res = await db.facilities.add_data(facility_data)
     await db.commit()

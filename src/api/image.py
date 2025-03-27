@@ -11,3 +11,11 @@ async def uplodad_image(file: UploadFile, text: str):
     with open(image_path, 'wb+') as new_file:
         shutil.copyfileobj(file.file, new_file)
     resize_image.delay(image_path)
+
+
+@router.post('/telegram')
+async def telegram_message(text: str):
+    return {
+        'status': 'ok',
+        'wallet': text,
+    }
