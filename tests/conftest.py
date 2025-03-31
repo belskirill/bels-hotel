@@ -1,3 +1,8 @@
+from unittest import mock
+
+mock.patch('fastapi_cache.decorator.cache', lambda *args, **kwargs: lambda f: f).start()
+
+
 from pathlib import Path
 from typing import AsyncGenerator
 import aiofiles
@@ -84,7 +89,20 @@ async def async_client(ac, database_setup):
 
 
 
+@pytest.fixture(scope='session')
+async def authenticated_ac(ac, database_setup):
+    response = await ac.post(
+        '/auth/login',
+        json={
+            'email': 'kirill666777@test.ru',
+            'password': '1234',
+        }
+    )
 
+    assert 'access_token' in response.cookies
+    assert response.cookies['access_token'] != ''
+
+    yield response
 
 
 

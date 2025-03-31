@@ -10,7 +10,7 @@ router = APIRouter(prefix="/hotels", tags=["hotels"])
 
 
 @router.get('')
-# @cache(expire=30)
+@cache(expire=30)
 async def get_hotels(
     date_to: date,
     date_from: date,
