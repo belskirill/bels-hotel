@@ -90,7 +90,7 @@ async def async_client(ac, database_setup):
 
 
 @pytest.fixture(scope='session')
-async def authenticated_ac(ac, database_setup):
+async def authenticated_ac(async_client, ac):
     response = await ac.post(
         '/auth/login',
         json={
@@ -99,10 +99,8 @@ async def authenticated_ac(ac, database_setup):
         }
     )
 
-    assert 'access_token' in response.cookies
-    assert response.cookies['access_token'] != ''
-
-    yield response
+    assert ac.cookies['access_token']
+    yield ac
 
 
 
