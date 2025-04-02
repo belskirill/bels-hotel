@@ -37,7 +37,10 @@ async def test_login_user(email, password, status_code, ac):
     )
 
     assert response.status_code == status_code
+    if response.status_code == 200:
+        assert "access_token" in response.json()
     assert ac.cookies['access_token']
+
 
 
 
@@ -52,6 +55,9 @@ async def test_user_me(email, status_code, ac):
     _data_ = response.json()
     assert response.status_code == status_code
     assert _data_['email'] == email
+    assert "id" in _data_
+    assert "password" not in _data_
+    assert "hashed_password" not in _data_
 
 
 

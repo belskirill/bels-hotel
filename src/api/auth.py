@@ -13,6 +13,7 @@ async def register_user(
         db: DBDep,
         data: UserRequestAdd
 ):
+
     hashed_password = AuthService().hash_password(data.password)
     new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
     await db.users.add_data(new_user_data)
