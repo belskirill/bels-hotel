@@ -10,6 +10,7 @@ class RoomsAddRequests(BaseModel):
     quantity: int
     facilities_ids: list[int] | None = None
 
+
 class RoomsAdd(BaseModel):
     hotel_id: int
     title: str
@@ -17,15 +18,13 @@ class RoomsAdd(BaseModel):
     price: int
     quantity: int
 
+
 class Rooms(RoomsAdd):
     id: int
 
 
-
-
 class RoomWithRels(Rooms):
     facilities: list[Facility]
-
 
 
 class RoomsPathRequests(BaseModel):
@@ -42,5 +41,3 @@ class RoomsPath(BaseModel):
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
-
-

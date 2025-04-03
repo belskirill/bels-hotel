@@ -2,7 +2,7 @@ from src.service.auth import AuthService
 
 
 def test_decode_and_endcode_access_token():
-    data = {'user_id': 1}
+    data = {"user_id": 1}
     jwt_token = AuthService().create_access_token(data)
 
     assert jwt_token
@@ -10,7 +10,4 @@ def test_decode_and_endcode_access_token():
 
     payload = AuthService().encode_token(jwt_token)
     assert payload
-    assert payload['user_id'] == data['user_id']
-
-
-
+    assert payload["user_id"] == data["user_id"]

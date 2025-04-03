@@ -7,32 +7,28 @@ from src.schemas.rooms import RoomWithRels
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
+
 class RoomsRepository(BaseRepository):
     model = RoomsOrm
     mapper = RoomDataMapper
 
     async def get_filtered_by_time(
-            self,
-            hotel_id,
-            date_from: date,
-            date_to: date
+        self, hotel_id, date_from: date, date_to: date
     ):
         rooms_ids_to_get = rooms_ids_for_booking(date_from, date_to, hotel_id)
 
         query = (
-
             select(self.model)
-
             .options(selectinload(self.model.facilities))
-
             .filter(RoomsOrm.id.in_(rooms_ids_to_get))
-
         )
 
         result = await self.session.execute(query)
 
-        return [RoomWithRels.model_validate(model) for model in result.unique().scalars().all()]
-
+        return [
+            RoomWithRels.model_validate(model)
+            for model in result.unique().scalars().all()
+        ]
 
     async def get_one_or_none(self, **filter_by):
         query = (
@@ -41,9 +37,7 @@ class RoomsRepository(BaseRepository):
             .filter_by(**filter_by)
         )
 
-
         results = await self.session.execute(query)
-
 
         model = results.scalars().one_or_none()
         if not model:

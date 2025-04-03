@@ -1,34 +1,31 @@
-
+from typing import Sequence
 from sqlalchemy import select, insert, delete, update
 from pydantic import BaseModel
 
+from exceptions import ObjectNotFoundException
+from src.database import Base
 from src.repositories.mappers.base import DataMapper
 
 
+from sqlalchemy.exc import NoResultFound
+
 class BaseRepository:
-    model = None
-    mapper: DataMapper = None
-
-
+    model = type[Base]
+    mapper: type[DataMapper]
 
     def __init__(self, session):
         self.session = session
 
-
     async def get_filtered(self, *filter, **filter_by):
-        query = (
-            select(self.model)
-            .filter_by(**filter_by)
-            .filter(*filter)
-        )
+        query = select(self.model).filter_by(**filter_by).filter(*filter)
         results = await self.session.execute(query)
-        return [self.mapper.map_to_domain(model) for model in results.scalars().all()]
+        return [
+            self.mapper.map_to_domain(model)
+            for model in results.scalars().all()
+        ]
 
     async def get_all(self, *args, **kwargs):
         return await self.get_filtered()
-
-
-
 
     async def get_one_or_none(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
@@ -38,23 +35,30 @@ class BaseRepository:
             return None
         return self.mapper.map_to_domain(model)
 
+    async def get_one(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
+        results = await self.session.execute(query)
+        try:
+            model = results.scalar_one()
+        except NoResultFound:
+            raise ObjectNotFoundException
+        return self.mapper.map_to_domain(model)
+
     async def add_data(self, data: BaseModel):
-        add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
+        add_data_stmt = (
+            insert(self.model).values(**data.model_dump()).returning(self.model)
+        )
         result = await self.session.execute(add_data_stmt)
         model = result.scalars().one()
         return self.mapper.map_to_domain(model)
 
-
-    async def add_bulk(self, data: list[BaseModel]):
-        add_data_stmt = (insert(self.model)
-                         .values([item.model_dump() for item in data]))
+    async def add_bulk(self, data: Sequence[BaseModel]):
+        add_data_stmt = insert(self.model).values(
+            [item.model_dump() for item in data]
+        )
         print(add_data_stmt)
 
         await self.session.execute(add_data_stmt)
-
-
-
-
 
     async def edit(self, hotel_data, **filter_by):
         stmt_edit_hotel = (
@@ -64,8 +68,6 @@ class BaseRepository:
         )
         await self.session.execute(stmt_edit_hotel)
 
-
     async def delete(self, **filter_by):
         stmt_del_hotel = delete(self.model).filter_by(**filter_by)
         await self.session.execute(stmt_del_hotel)
-
