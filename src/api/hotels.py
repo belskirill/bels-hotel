@@ -1,5 +1,3 @@
-from linecache import cache
-
 from fastapi import APIRouter, Query, Body
 from src.api.dependencies import PaginationDep, DBDep
 from src.schemas.hotels import HotelPatch, HotelAdd

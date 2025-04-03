@@ -3,9 +3,9 @@ from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import RoomDataMapper
 from src.repositories.utils import rooms_ids_for_booking
-from src.schemas.rooms import Rooms, RoomWithRels
+from src.schemas.rooms import RoomWithRels
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload
 
 class RoomsRepository(BaseRepository):
     model = RoomsOrm

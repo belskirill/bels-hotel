@@ -1,8 +1,4 @@
-from configparser import ConfigParser
-from typing import Annotated
-
-from pydantic import BaseModel, Field, ConfigDict
-from fastapi import Depends
+from pydantic import BaseModel, Field
 
 from src.schemas.facilities import Facility
 

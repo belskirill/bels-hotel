@@ -1,12 +1,11 @@
-import json
-from linecache import cache
+
 
 from fastapi import APIRouter
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep
-from src.init import redis_manager
-from src.schemas.facilities import FacilityAdd, Facility
+
+from src.schemas.facilities import FacilityAdd
 from src.tasks.tasks import t_tasks
 
 router = APIRouter(prefix="/facilities", tags=["facilities"])

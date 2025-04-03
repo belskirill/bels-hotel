@@ -1,7 +1,6 @@
-from pathlib import Path
+
 
 from src.service.auth import AuthService
-import sys
 
 
 

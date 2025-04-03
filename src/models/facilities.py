@@ -1,4 +1,4 @@
-from datetime import date
+import typing
 
 from src.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,7 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 
-
+if typing.TYPE_CHECKING:
+    from src.models import RoomsOrm
 
 
 class FacilitiesOrm(Base):

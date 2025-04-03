@@ -1,26 +1,28 @@
+#ruff: noqa: E402
 from unittest import mock
+
 
 mock.patch('fastapi_cache.decorator.cache', lambda *args, **kwargs: lambda f: f).start()
 
 
-from pathlib import Path
-from typing import AsyncGenerator
+from pathlib import Path # noqa
+
 import aiofiles
-from sqlalchemy.ext.asyncio import create_async_engine
 import pytest
 import json
 from httpx import AsyncClient
 from httpx import ASGITransport
 
-from src.api.dependencies import DBDep, get_db
-from src.config import settings
-from src.database import Base, engine_null_pool, async_session_maker_null_pool
-from src.main import app
-from src.models import *
-from src.schemas.hotels import HotelAdd
-from src.schemas.rooms import RoomsAdd
-from src.utils.db_manager import DBManager
-
+from src.api.dependencies import get_db # noqa
+from src.config import settings # noqa
+from src.database import Base, engine_null_pool, async_session_maker_null_pool # noqa
+from src.main import app # noqa
+from src.models import * # noqa
+from src.schemas.hotels import HotelAdd # noqa
+from src.schemas.rooms import RoomsAdd # noqa
+from src.utils.db_manager import DBManager # noqa
+import sys
+print("Modules loaded:", sorted(sys.modules.keys()))  # Проверить, есть ли 'pygame'
 current_dir = Path(__file__).parent
 file_path = current_dir / "mock_hotels.json"
 file_path2 = current_dir / "mock_rooms.json"
@@ -91,7 +93,7 @@ async def async_client(ac, database_setup):
 
 @pytest.fixture(scope='session')
 async def authenticated_ac(async_client, ac):
-    response = await ac.post(
+    await ac.post(
         '/auth/login',
         json={
             'email': 'kirill666777@test.ru',
