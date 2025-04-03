@@ -11,3 +11,6 @@ class ObjectNotFoundException(BelsHotelException):
 
 class AllRoomsAreBookedException(BelsHotelException):
     detail = 'Не осталось свободных номеров'
+
+class UserAlreadyExists(BelsHotelException):
+    detail = 'Пользователь уже существует!'

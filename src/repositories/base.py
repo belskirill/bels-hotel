@@ -2,12 +2,12 @@ from typing import Sequence
 from sqlalchemy import select, insert, delete, update
 from pydantic import BaseModel
 
-from exceptions import ObjectNotFoundException
+from exceptions import ObjectNotFoundException, UserAlreadyExists
 from src.database import Base
 from src.repositories.mappers.base import DataMapper
 
 
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
 class BaseRepository:
     model = type[Base]
@@ -48,8 +48,13 @@ class BaseRepository:
         add_data_stmt = (
             insert(self.model).values(**data.model_dump()).returning(self.model)
         )
-        result = await self.session.execute(add_data_stmt)
-        model = result.scalars().one()
+        try:
+            result = await self.session.execute(add_data_stmt)
+            model = result.scalars().one()
+        except NoResultFound:
+            raise ObjectNotFoundException
+        except IntegrityError:
+            raise UserAlreadyExists
         return self.mapper.map_to_domain(model)
 
     async def add_bulk(self, data: Sequence[BaseModel]):
@@ -69,5 +74,8 @@ class BaseRepository:
         await self.session.execute(stmt_edit_hotel)
 
     async def delete(self, **filter_by):
-        stmt_del_hotel = delete(self.model).filter_by(**filter_by)
-        await self.session.execute(stmt_del_hotel)
+        try:
+            stmt_del_hotel = delete(self.model).filter_by(**filter_by)
+            await self.session.execute(stmt_del_hotel)
+        except NoResultFound:
+            raise ObjectNotFoundException
