@@ -1,5 +1,7 @@
 from typing import TypeVar
+
 from pydantic import BaseModel
+
 from src.database import Base
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Response
-
 from exceptions import UserAlreadyExists
+
 from src.api.dependencies import UserIdDep, DBDep
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.service.auth import AuthService

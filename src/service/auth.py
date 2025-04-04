@@ -4,7 +4,6 @@ from fastapi import HTTPException
 from passlib.context import CryptContext
 import jwt
 
-
 from src.config import settings
 
 
