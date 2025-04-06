@@ -1,5 +1,7 @@
 from fastapi import HTTPException
 
+from datetime import date
+
 
 class BelsHotelException(Exception):
     detail = 'Неожиданная ошибка'
@@ -19,6 +21,13 @@ class UserAlreadyExists(BelsHotelException):
     detail = 'Пользователь уже существует!'
 
 
+class RoomNotFoundException(BelsHotelException):
+    detail = "Номер не найден"
+
+
+class HotelNotFoundException(BelsHotelException):
+    detail = "Отель не найден"
+
 
 class BelsHotelHTTPException(HTTPException):
     status_code = 500
@@ -26,6 +35,11 @@ class BelsHotelHTTPException(HTTPException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(status_code=self.status_code, detail=self.detail)
+
+
+def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
+    if date_to <= date_from:
+        raise HTTPException(status_code=422, detail="Дата заезда не может быть позже даты выезда")
 
 
 class HotelNotFoundHTTPException(BelsHotelHTTPException):

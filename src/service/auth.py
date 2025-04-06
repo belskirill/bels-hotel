@@ -5,9 +5,10 @@ from passlib.context import CryptContext
 import jwt
 
 from src.config import settings
+from src.service.base import BaseService
 
 
-class AuthService:
+class AuthService(BaseService):
     pwd_context = CryptContext(
         schemes=["argon2", "bcrypt"], deprecated="auto", bcrypt__ident="2b"
     )
