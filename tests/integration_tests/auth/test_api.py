@@ -25,8 +25,8 @@ async def test_register_user(email, password, status_code, ac):
     "email, password, status_code",
     [
         ("kirilltest@test.com", "password", 200),
-        ("kirilltest@test.com", "password1234", 401),
-        ("test@test212121212.ru", "password", 401),
+        ("kirilltest@test.com", "password1234", 409),
+        ("test@test212121212.ru", "password", 409),
         ("test2212.ru", "password", 422),
     ],
 )

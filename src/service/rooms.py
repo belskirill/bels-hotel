@@ -81,6 +81,6 @@ class RoomsService(BaseService):
 
     async def get_with_check_rooms(self, rooms_id):
         try:
-            await self.db.rooms.get_one(id=rooms_id)
+            return await self.db.rooms.get_one(id=rooms_id)
         except ObjectNotFoundException:
             raise RoomNotFoundException
