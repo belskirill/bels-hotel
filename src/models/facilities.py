@@ -22,7 +22,7 @@ class FacilitiesOrm(Base):
     )
 
 
-@classmethod
+
 class RoomsFacilitiesOrm(Base):
     __tablename__ = "room_facilities"
 

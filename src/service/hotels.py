@@ -30,7 +30,6 @@ class HotelService(BaseService):
 
 
     async def add_hotel(self, data: HotelAdd):
-        await self.get_hotel_with_check(hotel_id=data.hotel_id)
         hotel = await self.db.hotels.add_data(data)
         await self.db.commit()
         return hotel

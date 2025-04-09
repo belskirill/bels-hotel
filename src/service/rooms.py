@@ -1,5 +1,5 @@
-from exceptions import check_date_to_after_date_from, HotelNotFoundException, ObjectNotFoundException, \
-    HotelNotFoundHTTPException, RoomNotFoundException
+from exceptions import check_date_to_after_date_from, ObjectNotFoundException, \
+    RoomNotFoundException
 from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import RoomsAddRequests, RoomsAdd, RoomsPathRequests, RoomsPath
 from src.service.base import BaseService
@@ -33,11 +33,10 @@ class RoomsService(BaseService):
         _room_data = RoomsAdd(hotel_id=hotel_id, **room_data.model_dump())
         room = await self.db.rooms.add_data(_room_data)
         rooms_facilities_data = [
-            RoomsFacilityAdd(room_id=room.id, facility_id=f_id)
-            for f_id in room_data.facilities_ids
+            RoomsFacilityAdd(room_id=room.id, facility_id=f_id) for f_id in room_data.facilities_ids
         ]
-        print(rooms_facilities_data)
-        await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+        if rooms_facilities_data:
+            await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
         await self.db.commit()
 
     async def partially_update_room(

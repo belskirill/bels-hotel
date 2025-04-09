@@ -11,7 +11,7 @@ from src.repositories.mappers.base import DataMapper
 
 
 class BaseRepository:
-    model = type[Base]
+    model: type[Base]
     mapper: type[DataMapper]
 
     def __init__(self, session):
@@ -62,10 +62,7 @@ class BaseRepository:
                 raise ex
 
     async def add_bulk(self, data: Sequence[BaseModel]):
-        add_data_stmt = insert(self.model).values(
-            [item.model_dump() for item in data]
-        )
-        print(add_data_stmt)
+        add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
 
         await self.session.execute(add_data_stmt)
 

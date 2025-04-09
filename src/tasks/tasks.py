@@ -12,7 +12,7 @@ from src.utils.db_manager import DBManager
 @celery_instance.task
 def t_tasks():
     sleep(5)
-    print("close celery")
+    print("Я молодец")
 
 
 @celery_instance.task
