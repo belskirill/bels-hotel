@@ -37,5 +37,7 @@ celery --app=src.tasks.celery_app:celery_instance worker -l INFO -B
 
 docker run --name booking_nginx \
 -v ./nginx.conf:/etc/nginx/nginx.conf \
+-v /etc/letsencrypt:/etc/letsencrypt \
+-v /var/lib/letsencrypt:/var/lib/letsencrypt \
 --network=myNetwork \
---rm -p 80:80 nginx
+--rm -p 443:443 nginx
