@@ -26,6 +26,8 @@ class BookingsService(BaseService):
             raise AllRoomsAreBookedException
 
 
+
+
     async def get_bookings(self):
         return await self.db.bookings.get_all()
 

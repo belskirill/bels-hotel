@@ -88,6 +88,7 @@ class IncorrectPasswordhttpException(BelsHotelHTTPException):
     detail = 'Неверный пароль!'
 
 class AllRoomsAreBookedHTTPException(BelsHotelException):
+    status_code = 409
     detail = 'Не осталось свободных номеров'
 
 
