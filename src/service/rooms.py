@@ -38,9 +38,17 @@ class RoomsService(BaseService):
             RoomsFacilityAdd(room_id=room.id, facility_id=f_id) for f_id in room_data.facilities_ids
         ]
         if rooms_facilities_data:
-            rtr = await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+            await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
             await self.db.commit()
-            return rtr
+
+
+        facilities = await self.db.facilities.get_facilities(room_data)
+
+
+        room["facilities"] = [{"id": f.id, "title": f.title} for f in facilities]
+
+        return room
+
 
     async def partially_update_room(
         self, hotel_id: int, rooms_id: int, rooms_data: RoomsPathRequests

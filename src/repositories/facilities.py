@@ -21,6 +21,12 @@ class FacilityRepository(BaseRepository):
         return missing_ids
 
 
+    async def get_facilities(self, data):
+        stmt = select(self.model).where(self.model.id.in_(data.facilities_ids or []))
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
+
+
 class RoomsFacilitiesRepository(BaseRepository):
     model = RoomsFacilitiesOrm
     mapper = RoomsFacilityDataMapper
