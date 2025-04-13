@@ -16,6 +16,16 @@ class PaginationParams(BaseModel):
 PaginationDep = Annotated[PaginationParams, Depends()]
 
 
+def check_login(request: Request):
+    token = request.cookies.get("access_token", None)
+    if token:
+        raise HTTPException(
+            status_code=409,
+            detail="Вы уже авторизованы!",
+        )
+
+ChechLogin = Annotated[None, Depends(check_login)]
+
 def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
     if not token:

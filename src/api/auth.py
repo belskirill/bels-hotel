@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Response
+from aiofiles.os import access
+from fastapi import APIRouter, HTTPException, Response, Request
 from exceptions import UserAlreadyExists, UserAlreadyExistsExceptionHTTPException, UserAlreadyExistsException, \
     IncorrectPassword, UserNotExists, UserNotExistsHTTPException, IncorrectPasswordhttpException
 
-from src.api.dependencies import UserIdDep, DBDep
+from src.api.dependencies import UserIdDep, DBDep, ChechLogin
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.service.auth import AuthService
 
@@ -24,7 +25,7 @@ async def register_user(db: DBDep, data: UserRequestAdd):
 
 
 @router.post("/login")
-async def login_user(db: DBDep, data: UserRequestAdd, response: Response):
+async def login_user(db: DBDep, data: UserRequestAdd, response: Response, chech_login: ChechLogin):
     try:
         access_token = await AuthService(db).login_user(data)
         response.set_cookie("access_token", access_token)
@@ -32,6 +33,8 @@ async def login_user(db: DBDep, data: UserRequestAdd, response: Response):
     except UserNotExists:
         raise UserNotExistsHTTPException
     except IncorrectPassword:
+        raise IncorrectPasswordhttpException
+    except IncorrectPasswordhttpException:
         raise IncorrectPasswordhttpException
 
 

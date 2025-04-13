@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 class UserRequestAdd(BaseModel):
     email: EmailStr
-    password: str = Field(..., description='Пароль должен быть от 6 символов')
+    password: str
 
 
 class UserAdd(BaseModel):

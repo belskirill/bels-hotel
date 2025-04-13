@@ -46,7 +46,7 @@ class AuthService(BaseService):
 
     async def register_user(self, data: UserRequestAdd):
         password = data.password.strip()
-        if password and len(password) > 6:
+        if password:
             hashed_password = AuthService().hash_password(data.password)
             new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
             try:
@@ -59,13 +59,17 @@ class AuthService(BaseService):
 
 
     async def login_user(self, data: UserRequestAdd):
-        user = await self.db.users.get_user_with_hashed_password(email=data.email)
-        if not user:
-            raise UserNotExists
-        if not AuthService().verify_password(data.password, user.hashed_password):
-            raise IncorrectPassword
-        access_token = AuthService().create_access_token({"user_id": user.id})
-        return access_token
+        password = data.password.strip()
+        if password:
+            user = await self.db.users.get_user_with_hashed_password(email=data.email)
+            if not user:
+                raise UserNotExists
+            if not AuthService().verify_password(data.password, user.hashed_password):
+                raise IncorrectPassword
+            access_token = AuthService().create_access_token({"user_id": user.id})
+            return access_token
+        else:
+            raise IncorrectPasswordhttpException
 
 
     async def get_me(self, user_id):
@@ -74,6 +78,7 @@ class AuthService(BaseService):
             return user
         except ObjectNotFoundException:
             raise UserNotExists
+
 
 
 
