@@ -26,6 +26,18 @@ def check_login(request: Request):
 
 ChechLogin = Annotated[None, Depends(check_login)]
 
+
+
+def check_no_login(request: Request):
+    token = request.cookies.get("access_token", None)
+    if not token:
+        raise HTTPException(
+            status_code=409,
+            detail="Вы не авторизованы!",
+        )
+
+CheckNoLogin = Annotated[None, Depends(check_no_login)]
+
 def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
     if not token:

@@ -1,9 +1,8 @@
-from aiofiles.os import access
 from fastapi import APIRouter, HTTPException, Response, Request
 from exceptions import UserAlreadyExists, UserAlreadyExistsExceptionHTTPException, UserAlreadyExistsException, \
     IncorrectPassword, UserNotExists, UserNotExistsHTTPException, IncorrectPasswordhttpException
 
-from src.api.dependencies import UserIdDep, DBDep, ChechLogin
+from src.api.dependencies import UserIdDep, DBDep, ChechLogin, CheckNoLogin
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.service.auth import AuthService
 
@@ -47,6 +46,6 @@ async def get_me(db: DBDep, user_id: UserIdDep):
         raise UserNotExistsHTTPException
 
 @router.post("/logout")
-async def logout_user(response: Response):
+async def logout_user(response: Response, check_no_login: CheckNoLogin):
     response.delete_cookie("access_token")
     return {"status": "OK"}
