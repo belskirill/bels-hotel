@@ -58,7 +58,7 @@ async def create_room(
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
     except FacilityNotFound as ex:
-        raise FacilityNotFoundHTTPException(ex.missing_ids)
+        raise HTTPException(status_code=404, detail=f"Не найденные facilities: {str(ex.missing_ids)}")
 
 
 

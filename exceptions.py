@@ -118,13 +118,13 @@ class TitleDublicate(BelsHotelException):
 #     detail = f'не найденые facilities: {missing_ids}'
 
 
-class FacilityNotFound(Exception):
+class FacilityNotFound(BelsHotelHTTPException):
     def __init__(self, missing_ids: list[int]):
         self.missing_ids = missing_ids
 
 
-class FacilityNotFoundHTTPException(FacilityNotFound):
-    def __init__(self, missing_ids: list[int]):
-        super().__init__(missing_ids)  # передаём в родитель
-        self.status_code = 409
-        self.detail = f"Не найдены facilities: {self.missing_ids}"
+# class FacilityNotFoundHTTPException(FacilityNotFound):
+#     def __init__(self, missing_ids: list[int]):
+#         self.missing_ids = missing_ids
+#         detail = f"Не найдены facilities: {missing_ids}"
+#         super().__init__(status_code=409, detail=detail)
