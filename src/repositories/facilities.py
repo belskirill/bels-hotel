@@ -12,8 +12,8 @@ class FacilityRepository(BaseRepository):
     mapper = FacilityDataMapper
 
 
-    async def validate_facilities(self, data: BaseModel):
-        stmt = select(self.model.id).where(self.model.id.in_(data.facilities_ids))
+    async def validate_facilities(self, data):
+        stmt = select(self.model.id).where(self.model.id.in_(data))
         result = await self.session.execute(stmt)
         existing_ids = {row[0] for row in result.fetchall()}
 
