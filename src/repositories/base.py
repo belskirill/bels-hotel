@@ -41,9 +41,9 @@ class BaseRepository:
         results = await self.session.execute(query)
         try:
             model = results.scalar_one()
+            return self.mapper.map_to_domain(model)
         except NoResultFound:
             raise ObjectNotFoundException
-        return self.mapper.map_to_domain(model)
 
     async def add_data(self, data: BaseModel):
         add_data_stmt = (
