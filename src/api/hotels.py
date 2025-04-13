@@ -2,7 +2,9 @@ from datetime import date
 
 from fastapi import APIRouter, Query, Body, HTTPException
 from fastapi_cache.decorator import cache
-from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelNotFoundException
+from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelNotFoundException, TitleNotExists, \
+    TitleNotExistsHTTPException, LocationNotExists, TitleDublicate, LocationNotExistsHTTPException, \
+    LocationhotelNotExistsHTTPException
 
 from src.api.dependencies import PaginationDep, DBDep
 from src.schemas.hotels import HotelPatch, HotelAdd, Hotel
@@ -60,7 +62,15 @@ async def create_hotel(
         }
     ),
 ):
-    hotel = await HotelService(db).add_hotel(hotel_data)
+    try:
+        hotel = await HotelService(db).add_hotel(hotel_data)
+    except TitleNotExists:
+        raise TitleNotExistsHTTPException
+    except LocationNotExists:
+        raise LocationNotExistsHTTPException
+    except TitleDublicate:
+        raise LocationhotelNotExistsHTTPException
+
     return {"status": "OK", "data": hotel}
 
 
@@ -72,8 +82,14 @@ async def create_hotel(
 async def partially_update_hotel(
     hotel_id: int, hotel_data: HotelPatch, db: DBDep
 ):
-    await HotelService(db).path_edit_hotel(hotel_id=hotel_id, data=hotel_data)
-    return {"status": "OK"}
+    try:
+        await HotelService(db).path_edit_hotel(hotel_id=hotel_id, data=hotel_data)
+        return {"status": "OK"}
+    except TitleNotExists:
+        raise TitleNotExistsHTTPException
+    except LocationNotExists:
+        raise LocationNotExistsHTTPException
+
 
 
 @router.put("/{hotel_id}")
@@ -86,7 +102,7 @@ async def update_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
 async def delete_hotel(hotel_id: int, db: DBDep):
     try:
         await HotelService(db).delete_hotel(hotel_id=hotel_id)
-    except ObjectNotFoundException:
+    except HotelNotFoundException:
         raise HotelNotFoundHTTPException
 
     return {"status": "OK"}

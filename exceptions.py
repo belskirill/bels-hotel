@@ -67,6 +67,22 @@ class UserNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
     detail = 'Пользователь не найден!'
 
+
+class TitleNotExistsHTTPException(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'title не заполнен!'
+
+class LocationNotExistsHTTPException(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'location не заполнен!'
+
+
+class LocationhotelNotExistsHTTPException(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'Такой отель уже существует!'
+
+
+
 class IncorrectPasswordhttpException(BelsHotelHTTPException):
     status_code = 409
     detail = 'Неверный пароль!'
@@ -77,3 +93,38 @@ class AllRoomsAreBookedHTTPException(BelsHotelException):
 
 class UserAlreadyExistsException(BelsHotelHTTPException):
     detail = 'Пользователь сущетсвует'
+
+
+class TitleNotExists(BelsHotelException):
+    detail = 'title не заполнен!'
+
+class LocationNotExists(BelsHotelException):
+    detail = 'location не заполнен!'
+
+
+class TitleDublicate(BelsHotelException):
+    detail = 'title уже существует!'
+
+
+
+# class FacilityNotFound(BelsHotelException):
+#     def __init__(self, missing_ids):
+#         self.missing_ids = missing_ids
+#
+#     detail = 'facilities не найдены'
+#
+# class FacilityNotFoundHTTPException(FacilityNotFound):
+#     status_code = 409
+#     detail = f'не найденые facilities: {missing_ids}'
+
+
+class FacilityNotFound(Exception):
+    def __init__(self, missing_ids: list[int]):
+        self.missing_ids = missing_ids
+
+
+class FacilityNotFoundHTTPException(FacilityNotFound):
+    def __init__(self, missing_ids: list[int]):
+        super().__init__(missing_ids)  # передаём в родитель
+        self.status_code = 409
+        self.detail = f"Не найдены facilities: {self.missing_ids}"

@@ -1,4 +1,7 @@
-from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException
+from plistlib import loads
+
+from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
+    LocationNotExists, TitleDublicate
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.service.base import BaseService
 
@@ -30,6 +33,15 @@ class HotelService(BaseService):
 
 
     async def add_hotel(self, data: HotelAdd):
+        title = data.title
+        location = data.location
+        if not title:
+            raise TitleNotExists
+        if not location:
+            raise LocationNotExists
+        location_check = await self.db.hotels.get_one(title=title)
+        if location_check:
+            raise TitleDublicate
         hotel = await self.db.hotels.add_data(data)
         await self.db.commit()
         return hotel
@@ -37,6 +49,10 @@ class HotelService(BaseService):
 
     async def path_edit_hotel(self, hotel_id: int, data: HotelPatch):
         await self.get_hotel_with_check(hotel_id)
+        if not data.title:
+            raise TitleNotExists
+        if not data.location:
+            raise LocationNotExists
         await self.db.hotels.edit(data, id=hotel_id)
         await self.db.commit()
 

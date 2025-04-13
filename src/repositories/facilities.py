@@ -1,9 +1,10 @@
+from pydantic import BaseModel
 from sqlalchemy import select, delete, insert
 
 from src.models.facilities import FacilitiesOrm, RoomsFacilitiesOrm
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import FacilityDataMapper, RoomsFacilityDataMapper
-from src.schemas.facilities import RoomsFacility
+from src.schemas.facilities import RoomsFacility, Facility
 
 
 class FacilityRepository(BaseRepository):
@@ -46,3 +47,13 @@ class RoomsFacilitiesRepository(BaseRepository):
             )
 
             await self.session.execute(query)
+
+
+    async def validate_facilities(self, data: BaseModel):
+        stmt = select(Facility.id).where(Facility.id.in_(data.facilities_ids))
+        result = await self.session.execute(stmt)
+        existing_ids = {row[0] for row in result.fetchall()}
+
+        missing_ids = set(data.facilities_ids) - existing_ids
+        return missing_ids
+

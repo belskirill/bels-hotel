@@ -1,3 +1,6 @@
+from pydantic import BaseModel
+
+from exceptions import FacilityNotFound
 from src.schemas.facilities import FacilityAdd
 from src.service.base import BaseService
 
@@ -15,3 +18,15 @@ class FacilitiesService(BaseService):
         await self.db.commit()
         t_tasks.delay()
         return res
+
+
+    async def validate_facilirt(self, data: BaseModel):
+        missing_ids = await self.db.facilities.validate_facility(data.facilities_ids)
+        if missing_ids:
+            raise FacilityNotFound(missing_ids)
+
+
+            # raise HTTPException(
+            #     status_code=400,
+            #     detail=f"Следующие facilities_id не найдены: {missing_ids}"
+            # )

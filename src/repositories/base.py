@@ -64,7 +64,9 @@ class BaseRepository:
     async def add_bulk(self, data: Sequence[BaseModel]):
         add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
 
-        await self.session.execute(add_data_stmt)
+        results = await self.session.execute(add_data_stmt)
+        model = results.scalars().all()
+        return self.mapper.map_to_domain(model)
 
     async def edit(self, hotel_data, **filter_by):
         stmt_edit_hotel = (

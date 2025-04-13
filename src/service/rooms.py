@@ -3,6 +3,7 @@ from exceptions import check_date_to_after_date_from, ObjectNotFoundException, \
 from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import RoomsAddRequests, RoomsAdd, RoomsPathRequests, RoomsPath
 from src.service.base import BaseService
+from src.service.facilities import FacilitiesService
 from src.service.hotels import HotelService
 
 
@@ -30,14 +31,16 @@ class RoomsService(BaseService):
         room_data: RoomsAddRequests,
     ):
         await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
+        await FacilitiesService(self.db).validate_facilirt(room_data)
         _room_data = RoomsAdd(hotel_id=hotel_id, **room_data.model_dump())
         room = await self.db.rooms.add_data(_room_data)
         rooms_facilities_data = [
             RoomsFacilityAdd(room_id=room.id, facility_id=f_id) for f_id in room_data.facilities_ids
         ]
         if rooms_facilities_data:
-            await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
-        await self.db.commit()
+            rtr = await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+            await self.db.commit()
+            return rtr
 
     async def partially_update_room(
         self, hotel_id: int, rooms_id: int, rooms_data: RoomsPathRequests
@@ -74,7 +77,7 @@ class RoomsService(BaseService):
     async def delete_room(self, hotel_id, rooms_id):
         await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
         await self.get_with_check_rooms(rooms_id)
-        await self.db.rooms.delete(id=rooms_id, hotel_id=hotel_id)
+        await self.db.rooms.delete(id=rooms_id)
         await self.db.commit()
 
 
