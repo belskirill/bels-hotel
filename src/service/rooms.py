@@ -45,9 +45,10 @@ class RoomsService(BaseService):
         facilities = await self.db.facilities.get_facilities(room_data)
 
 
-        room["facilities"] = [{"id": f.id, "title": f.title} for f in facilities]
+        room_dict = room.model_dump()
+        room_dict["facilities"] = [{"id": f.id, "title": f.title} for f in facilities]
 
-        return room
+        return room_dict
 
 
     async def partially_update_room(
