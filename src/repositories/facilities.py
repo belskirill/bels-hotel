@@ -12,9 +12,20 @@ class FacilityRepository(BaseRepository):
     mapper = FacilityDataMapper
 
 
+    async def validate_facilities(self, data: BaseModel):
+        stmt = select(Facility.id).where(Facility.id.in_(data.facilities_ids))
+        result = await self.session.execute(stmt)
+        existing_ids = {row[0] for row in result.fetchall()}
+
+        missing_ids = set(data.facilities_ids) - existing_ids
+        return missing_ids
+
+
 class RoomsFacilitiesRepository(BaseRepository):
     model = RoomsFacilitiesOrm
     mapper = RoomsFacilityDataMapper
+
+
 
     async def set_room_facility(self, room_id, facilities_ids: list[int]):
         query = select(self.model.facility_id).filter_by(room_id=room_id)
@@ -49,11 +60,5 @@ class RoomsFacilitiesRepository(BaseRepository):
             await self.session.execute(query)
 
 
-    async def validate_facilities(self, data: BaseModel):
-        stmt = select(Facility.id).where(Facility.id.in_(data.facilities_ids))
-        result = await self.session.execute(stmt)
-        existing_ids = {row[0] for row in result.fetchall()}
 
-        missing_ids = set(data.facilities_ids) - existing_ids
-        return missing_ids
 
