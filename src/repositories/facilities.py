@@ -17,7 +17,7 @@ class FacilityRepository(BaseRepository):
         result = await self.session.execute(stmt)
         existing_ids = {row[0] for row in result.fetchall()}
 
-        missing_ids = set(data.facilities_ids) - existing_ids
+        missing_ids = set(data) - existing_ids
         return missing_ids
 
 
