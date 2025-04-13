@@ -21,7 +21,7 @@ class FacilitiesService(BaseService):
 
 
     async def validate_facilirt(self, data: BaseModel):
-        missing_ids = await self.db.facilities.validate_facility(data.facilities_ids)
+        missing_ids = await self.db.facilities.validate_facilities(data.facilities_ids)
         if missing_ids:
             raise FacilityNotFound(missing_ids)
 
