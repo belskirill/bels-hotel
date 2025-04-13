@@ -15,7 +15,9 @@ async def register_user(db: DBDep, data: UserRequestAdd):
     try:
         await AuthService(db).register_user(data)
     except UserAlreadyExistsException:
-     raise UserAlreadyExistsExceptionHTTPException
+        raise UserAlreadyExistsExceptionHTTPException
+    except IncorrectPasswordhttpException:
+        raise IncorrectPasswordhttpException
     return {
         "status": "OK",
     }

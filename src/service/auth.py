@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 import jwt
 
 from exceptions import UserAlreadyExists, UserAlreadyExistsException, UserNotExists, IncorrectPassword, \
-    ObjectNotFoundException
+    ObjectNotFoundException, IncorrectPasswordhttpException
 from src.config import settings
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.service.base import BaseService
@@ -45,13 +45,17 @@ class AuthService(BaseService):
 
 
     async def register_user(self, data: UserRequestAdd):
-        hashed_password = AuthService().hash_password(data.password)
-        new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
-        try:
-            await self.db.users.add_data(new_user_data)
-            await self.db.commit()
-        except UserAlreadyExists:
-            raise UserAlreadyExistsException
+        password = data.password.strip()
+        if password and len(password) > 6:
+            hashed_password = AuthService().hash_password(data.password)
+            new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
+            try:
+                await self.db.users.add_data(new_user_data)
+                await self.db.commit()
+            except UserAlreadyExists:
+                raise UserAlreadyExistsException
+        else:
+            raise IncorrectPasswordhttpException
 
 
     async def login_user(self, data: UserRequestAdd):
