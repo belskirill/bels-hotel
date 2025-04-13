@@ -13,7 +13,7 @@ class FacilityRepository(BaseRepository):
 
 
     async def validate_facilities(self, data: BaseModel):
-        stmt = select(Facility.id).where(Facility.id.in_(data.facilities_ids))
+        stmt = select(self.model.id).where(Facility.id.in_(data.facilities_ids))
         result = await self.session.execute(stmt)
         existing_ids = {row[0] for row in result.fetchall()}
 
