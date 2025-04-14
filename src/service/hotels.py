@@ -80,4 +80,4 @@ class HotelService(BaseService):
         try:
             return await self.db.hotels.get_one(title=title)
         except ObjectNotFoundException:
-            return None
+            return False
