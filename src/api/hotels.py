@@ -93,6 +93,8 @@ async def partially_update_hotel(
         raise TitleNotExistsHTTPException
     except LocationNotExists:
         raise LocationNotExistsHTTPException
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
 
 
 
