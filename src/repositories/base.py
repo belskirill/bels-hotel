@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from sqlalchemy import select, insert, delete, update
-from exceptions import ObjectNotFoundException, UserAlreadyExists
+from exceptions import ObjectNotFoundException, UserAlreadyExists, HotelDeleteConstraintException
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError
 from pydantic import BaseModel
@@ -84,4 +84,5 @@ class BaseRepository:
                 raise ObjectNotFoundException from ex
             else:
                 raise ex
+
 

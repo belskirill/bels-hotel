@@ -77,6 +77,11 @@ class LocationNotExistsHTTPException(BelsHotelHTTPException):
     detail = 'location не заполнен!'
 
 
+class HotelCloseDeleteHTTPExecption(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'Нельзя удалить отель из за связанных данных!'
+
+
 class LocationhotelNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
     detail = 'Такой отель уже существует!'
@@ -110,6 +115,9 @@ class LocationNotExists(BelsHotelException):
 class TitleNotFoundExcetion(BelsHotelException):
     detail = 'location не заполнен!'
 
+
+class HotelDeleteConstraintException(BelsHotelException):
+    detail = 'Нелья удалить отель из за связанных данных!'
 
 class HotelDublicateExeption(BelsHotelException):
     detail = 'Отель существует!'

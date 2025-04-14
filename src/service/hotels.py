@@ -1,7 +1,7 @@
 from plistlib import loads
 
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
-    LocationNotExists, TitleDublicate, HotelDublicateExeption
+    LocationNotExists, TitleDublicate, HotelDublicateExeption, HotelDeleteConstraintException
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.service.base import BaseService
 
@@ -67,8 +67,14 @@ class HotelService(BaseService):
 
     async def delete_hotel(self, hotel_id: int):
         await self.get_hotel_with_check(hotel_id)
-        await self.db.hotels.delete(id=hotel_id)
-        await self.db.commit()
+        try:
+            await self.db.hotels.delete(id=hotel_id)
+            await self.db.commit()
+        except ObjectNotFoundException:
+            raise HotelNotFoundException
+        except HotelDeleteConstraintException:
+            raise HotelDeleteConstraintException
+
 
     async def get_hotel_with_check(self, hotel_id):
         try:
