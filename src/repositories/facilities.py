@@ -32,6 +32,9 @@ class RoomsFacilitiesRepository(BaseRepository):
     mapper = RoomsFacilityDataMapper
 
 
+    async def delete(self, **filter_by):
+        stmt_del_hotel = delete(self.model).filter_by(**filter_by)
+        await self.session.execute(stmt_del_hotel)
 
     async def set_room_facility(self, room_id, facilities_ids: list[int]):
         query = select(self.model.facility_id).filter_by(room_id=room_id)

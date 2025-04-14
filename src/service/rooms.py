@@ -86,6 +86,8 @@ class RoomsService(BaseService):
     async def delete_room(self, hotel_id, rooms_id):
         await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
         await self.get_with_check_rooms(rooms_id)
+        await self.db.rooms_facilities.delete(room_id=rooms_id)
+        await self.db.commit()
         try:
             await self.db.rooms.delete(id=rooms_id)
             await self.db.commit()
