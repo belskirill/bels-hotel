@@ -81,6 +81,10 @@ class HotelCloseDeleteHTTPExecption(BelsHotelHTTPException):
     status_code = 409
     detail = 'Нельзя удалить отель из за связанных данных!'
 
+class RoomCloseDeleteHTTPExecption(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'Нельзя удалить номер из за связанных данных!'
+
 
 class LocationhotelNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
@@ -117,6 +121,10 @@ class TitleNotFoundExcetion(BelsHotelException):
 
 
 class HotelDeleteConstraintException(BelsHotelException):
+    detail = 'Нелья удалить отель из за связанных данных!'
+
+
+class RoomDeleteConstraintException(BelsHotelException):
     detail = 'Нелья удалить отель из за связанных данных!'
 
 class HotelDublicateExeption(BelsHotelException):

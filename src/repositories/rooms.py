@@ -1,10 +1,11 @@
 from datetime import date
 
-from sqlalchemy import select
+from asyncpg import ForeignKeyViolationError
+from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
-from exceptions import RoomNotFoundException
+from exceptions import RoomNotFoundException, RoomDeleteConstraintException
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import RoomDataMapper
@@ -16,6 +17,16 @@ from src.schemas.rooms import RoomWithRels
 class RoomsRepository(BaseRepository):
     model = RoomsOrm
     mapper = RoomDataMapper
+
+    async def delete(self, **filter_by):
+        try:
+            stmt_del_hotel = delete(self.model).filter_by(**filter_by)
+            await self.session.execute(stmt_del_hotel)
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, ForeignKeyViolationError):
+                raise RoomDeleteConstraintException from ex
+            else:
+                raise ex
 
     async def get_filtered_by_time(
         self, hotel_id, date_from: date, date_to: date

@@ -1,5 +1,5 @@
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, \
-    RoomNotFoundException
+    RoomNotFoundException, RoomDeleteConstraintException
 from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import RoomsAddRequests, RoomsAdd, RoomsPathRequests, RoomsPath
 from src.service.base import BaseService
@@ -86,8 +86,11 @@ class RoomsService(BaseService):
     async def delete_room(self, hotel_id, rooms_id):
         await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
         await self.get_with_check_rooms(rooms_id)
-        await self.db.rooms.delete(id=rooms_id)
-        await self.db.commit()
+        try:
+            await self.db.rooms.delete(id=rooms_id)
+            await self.db.commit()
+        except RoomDeleteConstraintException:
+            raise RoomDeleteConstraintException
 
 
     async def get_with_check_rooms(self, rooms_id):

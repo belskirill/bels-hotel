@@ -2,7 +2,8 @@ from datetime import date
 
 from fastapi import APIRouter, Body, Query, HTTPException
 from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, check_date_to_after_date_from, \
-    RoomNotFoundHTTPException, RoomNotFoundException, HotelNotFoundException, FacilityNotFound
+    RoomNotFoundHTTPException, RoomNotFoundException, HotelNotFoundException, FacilityNotFound, \
+    RoomCloseDeleteHTTPExecption, RoomDeleteConstraintException
 
 from src.api.dependencies import DBDep
 from src.schemas.facilities import RoomsFacilityAdd
@@ -100,5 +101,7 @@ async def delete_room(db: DBDep, rooms_id: int, hotel_id: int):
         raise HotelNotFoundHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
+    except RoomDeleteConstraintException:
+        raise RoomCloseDeleteHTTPExecption
 
     return {"status": "OK"}
