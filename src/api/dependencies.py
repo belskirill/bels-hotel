@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, Query, HTTPException, Request
+from jwt import ExpiredSignatureError, InvalidTokenError
 from pydantic import BaseModel
 
 from src.database import async_session_maker
@@ -48,8 +49,20 @@ def get_token(request: Request) -> str:
 
 
 def current_user_id(token: str = Depends(get_token)) -> int:
-    data = AuthService().encode_token(token)
-    return data["user_id"]
+    try:
+        data = AuthService().encode_token(token)
+        return data["user_id"]
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=401,
+            detail="Срок действия токена истёк",
+        )
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Недействительный токен",
+        )
+
 
 
 UserIdDep = Annotated[int, Depends(current_user_id)]
