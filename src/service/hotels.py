@@ -40,9 +40,7 @@ class HotelService(BaseService):
         if not location:
             raise LocationNotExists
 
-        location_check = self.get_hotel_with_check_title(title)
-        if location_check:
-            raise TitleDublicate
+
         hotel = await self.db.hotels.add_data(data)
         await self.db.commit()
         return hotel
