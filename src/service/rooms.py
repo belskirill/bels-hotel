@@ -34,6 +34,7 @@ class RoomsService(BaseService):
         await FacilitiesService(self.db).validate_facilirt(room_data)
         _room_data = RoomsAdd(hotel_id=hotel_id, **room_data.model_dump())
         room = await self.db.rooms.add_data(_room_data)
+        await self.db.commit()
         rooms_facilities_data = [
             RoomsFacilityAdd(room_id=room.id, facility_id=f_id) for f_id in room_data.facilities_ids
         ]
