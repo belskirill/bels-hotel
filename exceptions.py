@@ -103,6 +103,11 @@ class LocationNotExists(BelsHotelException):
     detail = 'location не заполнен!'
 
 
+class TitleNotFoundExcetion(BelsHotelException):
+    detail = 'location не заполнен!'
+
+
+
 class TitleDublicate(BelsHotelException):
     detail = 'title уже существует!'
 

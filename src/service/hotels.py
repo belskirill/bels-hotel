@@ -39,12 +39,14 @@ class HotelService(BaseService):
             raise TitleNotExists
         if not location:
             raise LocationNotExists
-        location_check = await self.db.hotels.get_one(title=title)
+
+        location_check = self.get_hotel_with_check_title(title)
         if location_check:
             raise TitleDublicate
         hotel = await self.db.hotels.add_data(data)
         await self.db.commit()
         return hotel
+
 
 
     async def path_edit_hotel(self, hotel_id: int, data: HotelPatch):
@@ -73,3 +75,9 @@ class HotelService(BaseService):
             return await self.db.hotels.get_one(id=hotel_id)
         except ObjectNotFoundException:
             raise HotelNotFoundException
+
+    async def get_hotel_with_check_title(self, title):
+        try:
+            return await self.db.hotels.get_one(title=title)
+        except ObjectNotFoundException:
+            return None
