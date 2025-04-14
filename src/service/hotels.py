@@ -1,6 +1,6 @@
-from plistlib import loads
 
-from sqlalchemy.testing.plugin.plugin_base import logging
+
+import logging
 
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
     LocationNotExists, TitleDublicate, HotelDublicateExeption, HotelDeleteConstraintException
