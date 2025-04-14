@@ -44,7 +44,7 @@ app = FastAPI(title="BELS docs", lifespan=lifespan, docs_url=None)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 👈 или укажи конкретный домен, например: ["https://your-frontend.com"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
