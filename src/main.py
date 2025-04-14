@@ -1,9 +1,7 @@
 from contextlib import asynccontextmanager
 import logging
-from typing import Annotated
 
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI
 import uvicorn
 
 
@@ -40,7 +38,7 @@ async def lifespan(app: FastAPI):
     await redis_manager.close()
 
 
-app = FastAPI(title="BELS docs", lifespan=lifespan, docs_url=None)
+app = FastAPI(title="BELS docs", lifespan=lifespan)
 
 
 app.include_router(router_auth)
