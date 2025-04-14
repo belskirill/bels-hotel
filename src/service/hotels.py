@@ -1,5 +1,7 @@
 from plistlib import loads
 
+from sqlalchemy.testing.plugin.plugin_base import logging
+
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
     LocationNotExists, TitleDublicate, HotelDublicateExeption, HotelDeleteConstraintException
 from src.schemas.hotels import HotelAdd, HotelPatch
@@ -66,6 +68,8 @@ class HotelService(BaseService):
 
 
     async def delete_hotel(self, hotel_id: int):
+        room = await self.db.rooms.get_all(hotel_id=hotel_id)
+        logging.warning(room)
         await self.get_hotel_with_check(hotel_id)
         try:
             await self.db.hotels.delete(id=hotel_id)
