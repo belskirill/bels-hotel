@@ -1,7 +1,7 @@
 from plistlib import loads
 
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
-    LocationNotExists, TitleDublicate
+    LocationNotExists, TitleDublicate, HotelDublicateExeption
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.service.base import BaseService
 
@@ -40,10 +40,12 @@ class HotelService(BaseService):
         if not location:
             raise LocationNotExists
 
-
-        hotel = await self.db.hotels.add_data(data)
-        await self.db.commit()
-        return hotel
+        try:
+            hotel = await self.db.hotels.add_data(data)
+            await self.db.commit()
+            return hotel
+        except HotelDublicateExeption:
+            raise HotelDublicateExeption
 
 
 

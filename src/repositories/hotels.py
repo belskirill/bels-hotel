@@ -1,7 +1,11 @@
 from datetime import date
 
-from sqlalchemy import select, func
+from asyncpg import UniqueViolationError
+from pydantic import BaseModel
+from sqlalchemy import select, func, insert
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
+from exceptions import ObjectNotFoundException, HotelDublicateExeption
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
@@ -12,6 +16,23 @@ from src.repositories.utils import rooms_ids_for_booking
 class HotelRepository(BaseRepository):
     model = HotelsOrm
     mapper = HotelDataMapper
+
+
+    async def add_data(self, data: BaseModel):
+        add_data_stmt = (
+            insert(self.model).values(**data.model_dump()).returning(self.model)
+        )
+        try:
+            result = await self.session.execute(add_data_stmt)
+            model = result.scalars().one()
+            return self.mapper.map_to_domain(model)
+        except NoResultFound:
+            raise ObjectNotFoundException
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, UniqueViolationError):
+                raise HotelDublicateExeption from ex
+            else:
+                raise ex
 
     async def get_filtered_by_time(
         self, date_from: date, date_to: date, location, title, limit, offset

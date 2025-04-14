@@ -81,6 +81,10 @@ class LocationhotelNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
     detail = 'Такой отель уже существует!'
 
+class HotelDublicateHTTPExeption(BelsHotelHTTPException):
+    status_code = 409
+    detail = 'Такой отель уже существует!'
+
 
 
 class IncorrectPasswordhttpException(BelsHotelHTTPException):
@@ -105,6 +109,10 @@ class LocationNotExists(BelsHotelException):
 
 class TitleNotFoundExcetion(BelsHotelException):
     detail = 'location не заполнен!'
+
+
+class HotelDublicateExeption(BelsHotelException):
+    detail = 'Отель существует!'
 
 
 

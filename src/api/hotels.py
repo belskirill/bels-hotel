@@ -4,7 +4,7 @@ from fastapi import APIRouter, Query, Body, HTTPException
 from fastapi_cache.decorator import cache
 from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelNotFoundException, TitleNotExists, \
     TitleNotExistsHTTPException, LocationNotExists, TitleDublicate, LocationNotExistsHTTPException, \
-    LocationhotelNotExistsHTTPException
+    LocationhotelNotExistsHTTPException, HotelDublicateExeption, HotelDublicateHTTPExeption
 
 from src.api.dependencies import PaginationDep, DBDep
 from src.schemas.hotels import HotelPatch, HotelAdd, Hotel
@@ -70,6 +70,9 @@ async def create_hotel(
         raise LocationNotExistsHTTPException
     except TitleDublicate:
         raise LocationhotelNotExistsHTTPException
+    except HotelDublicateExeption:
+        raise HotelDublicateHTTPExeption
+
 
     return {"status": "OK", "data": hotel}
 
