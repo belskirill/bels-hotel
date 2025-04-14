@@ -18,6 +18,11 @@ class RoomsRepository(BaseRepository):
     model = RoomsOrm
     mapper = RoomDataMapper
 
+
+    async def delete_room_in_hotel(self, ids_to_delete):
+        stmt = delete(self.model).where(self.model.id.in_(ids_to_delete))
+        await self.session.execute(stmt)
+
     async def delete(self, **filter_by):
         try:
             stmt_del_hotel = delete(self.model).filter_by(**filter_by)

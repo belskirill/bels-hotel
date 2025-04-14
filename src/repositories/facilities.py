@@ -68,6 +68,12 @@ class RoomsFacilitiesRepository(BaseRepository):
 
             await self.session.execute(query)
 
+    async def delete_facilities_room(self, ids_to_delete):
+        stmt = delete(self.model).where(self.model.room_id.in_(ids_to_delete))
+        await self.session.execute(stmt)
+
+
+
 
 
 
