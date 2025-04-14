@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 import logging
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Depends, HTTPException
 import uvicorn
 
 
@@ -28,7 +31,6 @@ from fastapi_cache.backends.redis import RedisBackend
 
 
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await redis_manager.connect()
@@ -38,8 +40,15 @@ async def lifespan(app: FastAPI):
     await redis_manager.close()
 
 
-app = FastAPI(title="BELS docs", lifespan=lifespan)
+app = FastAPI(title="BELS docs", lifespan=lifespan, docs_url=None)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 👈 или укажи конкретный домен, например: ["https://your-frontend.com"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(router_auth)
 app.include_router(router_hotels)
 app.include_router(router_rooms)
