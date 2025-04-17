@@ -73,6 +73,9 @@ class HotelService(BaseService):
 
         room = await self.db.rooms.get_all(hotel_id=hotel_id)
 
+        booking = await self.db.bookings.get_all(room_id=room.id)
+        logging.warning(booking)
+
 
         delete_facilities_id = [
             DeleteRoom(id=r_id.id) for r_id in room
