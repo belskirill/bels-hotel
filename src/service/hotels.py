@@ -4,6 +4,7 @@ import logging
 
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
     LocationNotExists, TitleDublicate, HotelDublicateExeption, HotelDeleteConstraintException
+from src.schemas.bookings import DeleteBooking
 from src.schemas.hotels import HotelAdd, HotelPatch, DeleteRoom
 from src.service.base import BaseService
 
@@ -71,16 +72,21 @@ class HotelService(BaseService):
 
         await self.get_hotel_with_check(hotel_id)
 
+
+
         room = await self.db.rooms.get_all(hotel_id=hotel_id)
         logging.warning(room)
-        booking = await self.db.bookings.get_all(room_id=room)
-        logging.warning(booking)
+
+
+
+
 
 
         delete_facilities_id = [
             DeleteRoom(id=r_id.id) for r_id in room
         ]
         ids_to_delete = [item.id for item in delete_facilities_id]
+        await self.db.bookings.delete_bookings(ids_to_delete)
         await self.db.rooms_facilities.delete_facilities_room(ids_to_delete)
         await self.db.commit()
 

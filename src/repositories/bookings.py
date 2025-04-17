@@ -1,7 +1,7 @@
 from datetime import date
 
 from exceptions import AllRoomsAreBookedException
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from src.models.bookings import BookingsOrm
 from src.repositories.base import BaseRepository
@@ -36,3 +36,7 @@ class BookingsRepository(BaseRepository):
             new_booking = await self.add_data(data)
             return new_booking
         raise AllRoomsAreBookedException
+
+    async def delete_bookings(self, ids_to_delete):
+        stmt = delete(self.model).where(self.model.room_id.in_(ids_to_delete))
+        await self.session.execute(stmt)
