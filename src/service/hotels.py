@@ -72,7 +72,7 @@ class HotelService(BaseService):
         await self.get_hotel_with_check(hotel_id)
 
         room = await self.db.rooms.get_all(hotel_id=hotel_id)
-
+        logging.warning(room)
         booking = await self.db.bookings.get_all(room_id=room)
         logging.warning(booking)
 
