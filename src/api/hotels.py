@@ -120,3 +120,7 @@ async def delete_hotel(hotel_id: int, db: DBDep) -> dict[str, str]:
     return {"status": "OK"}
 
 
+@router.get("")
+async def get_hotels():
+    return ""
+
