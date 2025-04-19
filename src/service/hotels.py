@@ -38,7 +38,7 @@ class HotelService(BaseService):
         return await self.db.hotels.get_one(id=hotel_id)
 
 
-    async def add_hotel(self, data: HotelAdd[BaseModel]) -> Union[SchemaType]:
+    async def add_hotel(self, data: HotelAdd):
         title = data.title
         location = data.location
         if not title:
