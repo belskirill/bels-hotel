@@ -90,4 +90,3 @@ class BaseRepository:
 
 
 
-type x = list[int]

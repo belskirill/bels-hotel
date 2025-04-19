@@ -11,6 +11,16 @@ docker run --name booking_db \
 -d postgres:17
 
 
+docker run --name booking_db_test \
+-p 9432:5432 \
+-e POSTGRES_USER=belskirill \
+-e POSTGRES_PASSWORD=1234 \
+-e POSTGRES_DB=hotel_database_test \
+--network=myNetwork \
+--volume pg-data:/var/lib/postgresql/data \
+-d postgres:17
+
+
 docker run --name booking_cache \
 -p 7379:6379 \
 --network=myNetwork \
