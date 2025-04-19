@@ -1,6 +1,8 @@
-from typing import Sequence
-
+from typing import Sequence, Optional
+import typing
 from sqlalchemy import select, insert, delete, update
+from sqlalchemy.sql.sqltypes import SchemaType
+
 from exceptions import ObjectNotFoundException, UserAlreadyExists, HotelDeleteConstraintException
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError
@@ -28,7 +30,7 @@ class BaseRepository:
     async def get_all(self, *args, **kwargs):
         return await self.get_filtered()
 
-    async def get_one_or_none(self, **filter_by):
+    async def get_one_or_none(self, **filter_by) -> Optional[SchemaType]:
         query = select(self.model).filter_by(**filter_by)
         results = await self.session.execute(query)
         model = results.scalars().one_or_none()
@@ -67,7 +69,7 @@ class BaseRepository:
         await self.session.execute(add_data_stmt)
 
 
-    async def edit(self, hotel_data, **filter_by):
+    async def edit(self, hotel_data, **filter_by) -> None:
         stmt_edit_hotel = (
             update(self.model)
             .filter_by(**filter_by)
@@ -86,3 +88,6 @@ class BaseRepository:
                 raise ex
 
 
+
+
+type x = list[int]

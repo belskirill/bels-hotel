@@ -7,6 +7,9 @@ from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, Hote
     LocationhotelNotExistsHTTPException, HotelDublicateExeption, HotelDublicateHTTPExeption, \
     HotelDeleteConstraintException, HotelCloseDeleteHTTPExecption
 
+
+from typing import Dict
+
 from src.api.dependencies import PaginationDep, DBDep
 from src.schemas.hotels import HotelPatch, HotelAdd, Hotel
 from src.service.hotels import HotelService
@@ -105,7 +108,7 @@ async def update_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
 
 
 @router.delete("/{hotel_id}")
-async def delete_hotel(hotel_id: int, db: DBDep):
+async def delete_hotel(hotel_id: int, db: DBDep) -> dict[str, str]:
     try:
         await HotelService(db).delete_hotel(hotel_id=hotel_id)
     except HotelNotFoundException:

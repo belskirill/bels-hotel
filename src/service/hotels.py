@@ -1,10 +1,13 @@
-
-
 import logging
 
+from pydantic import BaseModel
+
+from src.repositories.mappers.base import SchemaType
+
+from typing import Union
+
 from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
-    LocationNotExists, TitleDublicate, HotelDublicateExeption, HotelDeleteConstraintException
-from src.schemas.bookings import DeleteBooking
+    LocationNotExists,  HotelDublicateExeption, HotelDeleteConstraintException
 from src.schemas.hotels import HotelAdd, HotelPatch, DeleteRoom
 from src.service.base import BaseService
 
@@ -35,7 +38,7 @@ class HotelService(BaseService):
         return await self.db.hotels.get_one(id=hotel_id)
 
 
-    async def add_hotel(self, data: HotelAdd):
+    async def add_hotel(self, data: HotelAdd[BaseModel]) -> Union[SchemaType]:
         title = data.title
         location = data.location
         if not title:
@@ -76,10 +79,6 @@ class HotelService(BaseService):
 
         room = await self.db.rooms.get_all(hotel_id=hotel_id)
         logging.warning(room)
-
-
-
-
 
 
         delete_facilities_id = [
