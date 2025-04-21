@@ -26,6 +26,7 @@ Format:
     - docker run --rm --network myNetwork booking-api-image ruff format --check
 
 
+
 Migrations:
   stage: migration
   script: docker run --rm --network myNetwork booking-api-image alembic upgrade head
