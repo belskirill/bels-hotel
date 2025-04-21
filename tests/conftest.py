@@ -40,7 +40,7 @@ def check_test_mode():
 
 
 @pytest.fixture(scope="function")
-async def db() -> AsyncGenerator[DBManager]:
+async def db():
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
 
@@ -76,7 +76,7 @@ async def database_setup(check_test_mode):
 
 
 @pytest.fixture(scope="session")
-async def ac() -> AsyncGenerator[AsyncClient]:
+async def ac():
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
