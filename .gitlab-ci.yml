@@ -31,6 +31,7 @@ Migrations:
   stage: migration
   script: docker run --rm --network myNetwork booking-api-image alembic upgrade head
 
+
 Tests:
   stage: test
   script: docker run --rm --network myNetwork booking-api-image pytest -s
