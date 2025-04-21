@@ -1,17 +1,13 @@
 from datetime import date
 
 from fastapi import APIRouter, Body, Query, HTTPException
-from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, check_date_to_after_date_from, \
-    RoomNotFoundHTTPException, RoomNotFoundException, HotelNotFoundException, FacilityNotFound, \
+from exceptions import HotelNotFoundHTTPException, RoomNotFoundHTTPException, RoomNotFoundException, HotelNotFoundException, FacilityNotFound, \
     RoomCloseDeleteHTTPExecption, RoomDeleteConstraintException
 
 from src.api.dependencies import DBDep
-from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import (
-    RoomsAdd,
-    RoomsPath,
     RoomsAddRequests,
-    RoomsPathRequests, Rooms,
+    RoomsPathRequests,
 )
 from src.service.rooms import RoomsService
 

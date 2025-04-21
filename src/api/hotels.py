@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Query, Body, HTTPException
+from fastapi import APIRouter, Query, Body
 from fastapi_cache.decorator import cache
 from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelNotFoundException, TitleNotExists, \
     TitleNotExistsHTTPException, LocationNotExists, TitleDublicate, LocationNotExistsHTTPException, \
@@ -8,10 +8,9 @@ from exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, Hote
     HotelDeleteConstraintException, HotelCloseDeleteHTTPExecption
 
 
-from typing import Dict
 
 from src.api.dependencies import PaginationDep, DBDep
-from src.schemas.hotels import HotelPatch, HotelAdd, Hotel
+from src.schemas.hotels import HotelPatch, HotelAdd
 from src.service.hotels import HotelService
 
 router = APIRouter(prefix="/hotels", tags=["hotels"])
@@ -120,7 +119,5 @@ async def delete_hotel(hotel_id: int, db: DBDep) -> dict[str, str]:
     return {"status": "OK"}
 
 
-@router.get("")
-async def get_hotels():
-    return ""
+
 

@@ -1,9 +1,8 @@
 from typing import Sequence, Optional
-import typing
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.sql.sqltypes import SchemaType
 
-from exceptions import ObjectNotFoundException, UserAlreadyExists, HotelDeleteConstraintException
+from exceptions import ObjectNotFoundException, UserAlreadyExists
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from asyncpg.exceptions import UniqueViolationError, ForeignKeyViolationError
 from pydantic import BaseModel

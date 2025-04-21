@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Response, Request
-from exceptions import UserAlreadyExists, UserAlreadyExistsExceptionHTTPException, UserAlreadyExistsException, \
+from fastapi import APIRouter, Response
+from exceptions import UserAlreadyExistsExceptionHTTPException, UserAlreadyExistsException, \
     IncorrectPassword, UserNotExists, UserNotExistsHTTPException, IncorrectPasswordhttpException
 
 from src.api.dependencies import UserIdDep, DBDep, ChechLogin, CheckNoLogin
-from src.schemas.users import UserRequestAdd, UserAdd
+from src.schemas.users import UserRequestAdd
 from src.service.auth import AuthService
 
 

@@ -1,5 +1,4 @@
 # ruff: noqa: E402
-from typing import AsyncGenerator
 from unittest import mock
 
 

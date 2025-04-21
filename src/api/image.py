@@ -1,4 +1,3 @@
-import shutil
 
 from fastapi import APIRouter, UploadFile, HTTPException
 
