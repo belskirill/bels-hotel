@@ -13,11 +13,9 @@ from src.repositories.utils import rooms_ids_for_booking
 from src.schemas.rooms import RoomWithRels
 
 
-
 class RoomsRepository(BaseRepository):
     model = RoomsOrm
     mapper = RoomDataMapper
-
 
     async def delete_room_in_hotel(self, ids_to_delete):
         stmt = delete(self.model).where(self.model.id.in_(ids_to_delete))

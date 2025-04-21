@@ -1,8 +1,15 @@
 from datetime import date
 
 from fastapi import APIRouter, Body, Query, HTTPException
-from exceptions import HotelNotFoundHTTPException, RoomNotFoundHTTPException, RoomNotFoundException, HotelNotFoundException, FacilityNotFound, \
-    RoomCloseDeleteHTTPExecption, RoomDeleteConstraintException
+from exceptions import (
+    HotelNotFoundHTTPException,
+    RoomNotFoundHTTPException,
+    RoomNotFoundException,
+    HotelNotFoundException,
+    FacilityNotFound,
+    RoomCloseDeleteHTTPExecption,
+    RoomDeleteConstraintException,
+)
 
 from src.api.dependencies import DBDep
 from src.schemas.rooms import (
@@ -31,11 +38,12 @@ async def get_room(
         raise HotelNotFoundHTTPException
 
 
-
 @router.get("/{hotel_id}/rooms/{rooms_id}")
 async def get_room_by_id(rooms_id: int, hotel_id: int, db: DBDep):
     try:
-        return await RoomsService(db).get_room(rooms_id=rooms_id, hotel_id=hotel_id)
+        return await RoomsService(db).get_room(
+            rooms_id=rooms_id, hotel_id=hotel_id
+        )
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
     except HotelNotFoundException:
@@ -54,9 +62,10 @@ async def create_room(
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
     except FacilityNotFound as ex:
-        raise HTTPException(status_code=404, detail=f"Не найденные facilities: {str(ex.missing_ids)}")
-
-
+        raise HTTPException(
+            status_code=404,
+            detail=f"Не найденные facilities: {str(ex.missing_ids)}",
+        )
 
     return {"status": "OK", "data": room}
 
@@ -70,7 +79,9 @@ async def partially_update_room(
     db: DBDep, hotel_id: int, rooms_id: int, rooms_data: RoomsPathRequests
 ):
     try:
-        await RoomsService(db).partially_update_room(hotel_id, rooms_id, rooms_data)
+        await RoomsService(db).partially_update_room(
+            hotel_id, rooms_id, rooms_data
+        )
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
 
@@ -82,7 +93,9 @@ async def update_room(
     db: DBDep, hotel_id: int, rooms_id: int, rooms_data: RoomsAddRequests
 ):
     try:
-        await RoomsService(db).put_edit_room(hotel_id=hotel_id, rooms_id=rooms_id, rooms_data=rooms_data)
+        await RoomsService(db).put_edit_room(
+            hotel_id=hotel_id, rooms_id=rooms_id, rooms_data=rooms_data
+        )
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
 

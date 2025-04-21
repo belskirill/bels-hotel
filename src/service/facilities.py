@@ -12,19 +12,18 @@ class FacilitiesService(BaseService):
         t_tasks.delay()
         return await self.db.facilities.get_all()
 
-
     async def create_facility(self, data: FacilityAdd):
         res = await self.db.facilities.add_data(data)
         await self.db.commit()
         t_tasks.delay()
         return res
 
-
     async def validate_facilirt(self, data: BaseModel):
-        missing_ids = await self.db.facilities.validate_facilities(data.facilities_ids)
+        missing_ids = await self.db.facilities.validate_facilities(
+            data.facilities_ids
+        )
         if missing_ids:
             raise FacilityNotFound(missing_ids)
-
 
             # raise HTTPException(
             #     status_code=400,

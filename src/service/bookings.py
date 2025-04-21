@@ -7,10 +7,15 @@ from src.service.rooms import RoomsService
 
 
 class BookingsService(BaseService):
-    async def add_booking(self, booking_data: BookingAddRequest, user_id: UserIdDep):
-
-        room = await RoomsService(self.db).get_with_check_rooms(rooms_id=booking_data.room_id)
-        hotel = await HotelService(self.db).get_hotel_with_check(hotel_id=room.hotel_id)
+    async def add_booking(
+        self, booking_data: BookingAddRequest, user_id: UserIdDep
+    ):
+        room = await RoomsService(self.db).get_with_check_rooms(
+            rooms_id=booking_data.room_id
+        )
+        hotel = await HotelService(self.db).get_hotel_with_check(
+            hotel_id=room.hotel_id
+        )
 
         room_price: int = room.price
         _booking_data = BookingAdd(
@@ -19,14 +24,13 @@ class BookingsService(BaseService):
             **booking_data.dict(),
         )
         try:
-            booking = await self.db.bookings.add_booking(_booking_data, hotel_id=hotel.id)
+            booking = await self.db.bookings.add_booking(
+                _booking_data, hotel_id=hotel.id
+            )
             await self.db.commit()
             return booking
         except AllRoomsAreBookedException:
             raise AllRoomsAreBookedException
-
-
-
 
     async def get_bookings(self):
         return await self.db.bookings.get_all()

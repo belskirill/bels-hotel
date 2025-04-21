@@ -22,7 +22,6 @@ class FacilitiesOrm(Base):
     )
 
 
-
 class RoomsFacilitiesOrm(Base):
     __tablename__ = "room_facilities"
 

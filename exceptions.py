@@ -4,27 +4,30 @@ from datetime import date
 
 
 class BelsHotelException(Exception):
-    detail = 'Неожиданная ошибка'
+    detail = "Неожиданная ошибка"
 
     def __init__(self, *args, **kwargs):
         super().__init__(self.detail, *args, **kwargs)
 
 
 class ObjectNotFoundException(BelsHotelException):
-    detail = 'Объект не найден'
+    detail = "Объект не найден"
 
 
 class AllRoomsAreBookedException(BelsHotelException):
-    detail = 'Не осталось свободных номеров'
+    detail = "Не осталось свободных номеров"
+
 
 class UserAlreadyExists(BelsHotelException):
-    detail = 'Пользователь уже существует!'
+    detail = "Пользователь уже существует!"
+
 
 class UserNotExists(BelsHotelException):
-    detail = 'Пользователь не найден!'
+    detail = "Пользователь не найден!"
+
 
 class IncorrectPassword(BelsHotelException):
-    detail = 'неверный пароль!'
+    detail = "неверный пароль!"
 
 
 class RoomNotFoundException(BelsHotelException):
@@ -45,96 +48,102 @@ class BelsHotelHTTPException(HTTPException):
 
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_to <= date_from:
-        raise HTTPException(status_code=422, detail="Дата заезда не может быть позже даты выезда")
+        raise HTTPException(
+            status_code=422,
+            detail="Дата заезда не может быть позже даты выезда",
+        )
 
 
 class HotelNotFoundHTTPException(BelsHotelHTTPException):
     status_code = 404
-    detail = 'Отель не найден'
+    detail = "Отель не найден"
 
 
 class RoomNotFoundHTTPException(BelsHotelHTTPException):
     status_code = 404
-    detail = 'номер не найден'
+    detail = "номер не найден"
 
 
 class UserAlreadyExistsExceptionHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Такой пользователь уже существует!'
+    detail = "Такой пользователь уже существует!"
 
 
 class UserNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Пользователь не найден!'
+    detail = "Пользователь не найден!"
 
 
 class TitleNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'title не заполнен!'
+    detail = "title не заполнен!"
+
 
 class LocationNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'location не заполнен!'
+    detail = "location не заполнен!"
 
 
 class HotelCloseDeleteHTTPExecption(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Нельзя удалить отель из за связанных данных!'
+    detail = "Нельзя удалить отель из за связанных данных!"
+
 
 class RoomCloseDeleteHTTPExecption(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Нельзя удалить номер из за связанных данных!'
+    detail = "Нельзя удалить номер из за связанных данных!"
 
 
 class LocationhotelNotExistsHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Такой отель уже существует!'
+    detail = "Такой отель уже существует!"
+
 
 class HotelDublicateHTTPExeption(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Такой отель уже существует!'
-
+    detail = "Такой отель уже существует!"
 
 
 class IncorrectPasswordhttpException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Неверный пароль!'
+    detail = "Неверный пароль!"
+
 
 class AllRoomsAreBookedHTTPException(BelsHotelHTTPException):
     status_code = 409
-    detail = 'Не осталось свободных номеров'
+    detail = "Не осталось свободных номеров"
 
 
 class UserAlreadyExistsException(BelsHotelHTTPException):
-    detail = 'Пользователь сущетсвует'
+    detail = "Пользователь сущетсвует"
 
 
 class TitleNotExists(BelsHotelException):
-    detail = 'title не заполнен!'
+    detail = "title не заполнен!"
+
 
 class LocationNotExists(BelsHotelException):
-    detail = 'location не заполнен!'
+    detail = "location не заполнен!"
 
 
 class TitleNotFoundExcetion(BelsHotelException):
-    detail = 'location не заполнен!'
+    detail = "location не заполнен!"
 
 
 class HotelDeleteConstraintException(BelsHotelException):
-    detail = 'Нелья удалить отель из за связанных данных!'
+    detail = "Нелья удалить отель из за связанных данных!"
 
 
 class RoomDeleteConstraintException(BelsHotelException):
-    detail = 'Нелья удалить отель из за связанных данных!'
+    detail = "Нелья удалить отель из за связанных данных!"
+
 
 class HotelDublicateExeption(BelsHotelException):
-    detail = 'Отель существует!'
-
+    detail = "Отель существует!"
 
 
 class TitleDublicate(BelsHotelException):
-    detail = 'title уже существует!'
-
+    detail = "title уже существует!"
 
 
 # class FacilityNotFound(BelsHotelException):

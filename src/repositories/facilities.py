@@ -2,13 +2,15 @@ from sqlalchemy import select, delete, insert
 
 from src.models.facilities import FacilitiesOrm, RoomsFacilitiesOrm
 from src.repositories.base import BaseRepository
-from src.repositories.mappers.mappers import FacilityDataMapper, RoomsFacilityDataMapper
+from src.repositories.mappers.mappers import (
+    FacilityDataMapper,
+    RoomsFacilityDataMapper,
+)
 
 
 class FacilityRepository(BaseRepository):
     model = FacilitiesOrm
     mapper = FacilityDataMapper
-
 
     async def validate_facilities(self, data):
         stmt = select(self.model.id).where(self.model.id.in_(data))
@@ -18,9 +20,10 @@ class FacilityRepository(BaseRepository):
         missing_ids = set(data) - existing_ids
         return missing_ids
 
-
     async def get_facilities(self, data):
-        stmt = select(self.model).where(self.model.id.in_(data.facilities_ids or []))
+        stmt = select(self.model).where(
+            self.model.id.in_(data.facilities_ids or [])
+        )
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
@@ -28,7 +31,6 @@ class FacilityRepository(BaseRepository):
 class RoomsFacilitiesRepository(BaseRepository):
     model = RoomsFacilitiesOrm
     mapper = RoomsFacilityDataMapper
-
 
     async def delete(self, **filter_by):
         stmt_del_hotel = delete(self.model).filter_by(**filter_by)
@@ -57,7 +59,7 @@ class RoomsFacilitiesRepository(BaseRepository):
             await self.session.execute(query)
 
         if insert_facility_ids:
-            query = insert(self.model).values( # type: ignore
+            query = insert(self.model).values(  # type: ignore
                 [
                     {"room_id": room_id, "facility_id": f_id}
                     for f_id in insert_facility_ids
@@ -69,9 +71,3 @@ class RoomsFacilitiesRepository(BaseRepository):
     async def delete_facilities_room(self, ids_to_delete):
         stmt = delete(self.model).where(self.model.room_id.in_(ids_to_delete))
         await self.session.execute(stmt)
-
-
-
-
-
-

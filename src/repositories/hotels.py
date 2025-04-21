@@ -5,7 +5,11 @@ from pydantic import BaseModel
 from sqlalchemy import select, func, insert, delete
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
-from exceptions import ObjectNotFoundException, HotelDublicateExeption, HotelDeleteConstraintException
+from exceptions import (
+    ObjectNotFoundException,
+    HotelDublicateExeption,
+    HotelDeleteConstraintException,
+)
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
@@ -17,8 +21,6 @@ class HotelRepository(BaseRepository):
     model = HotelsOrm
     mapper = HotelDataMapper
 
-
-
     async def delete(self, **filter_by):
         try:
             stmt_del_hotel = delete(self.model).filter_by(**filter_by)
@@ -27,7 +29,6 @@ class HotelRepository(BaseRepository):
             if isinstance(ex.orig.__cause__, ForeignKeyViolationError):
                 raise HotelDeleteConstraintException
             raise ex
-
 
     async def add_data(self, data: BaseModel):
         add_data_stmt = (

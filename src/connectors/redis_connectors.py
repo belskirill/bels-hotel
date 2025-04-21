@@ -12,7 +12,7 @@ class RedisManager:
     async def connect(self):
         logging.info("Начинаю подключение к Redis...")
         self.redis = await redis.Redis(host=self.host, port=self.port)
-        logging.info('Успешное подключение к Redis...')
+        logging.info("Успешное подключение к Redis...")
 
     async def set(self, key, value, expire):
         if expire:

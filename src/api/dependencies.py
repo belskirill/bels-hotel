@@ -25,8 +25,8 @@ def check_login(request: Request):
             detail="Вы уже авторизованы!",
         )
 
-ChechLogin = Annotated[None, Depends(check_login)]
 
+ChechLogin = Annotated[None, Depends(check_login)]
 
 
 def check_no_login(request: Request):
@@ -37,7 +37,9 @@ def check_no_login(request: Request):
             detail="Вы не авторизованы!",
         )
 
+
 CheckNoLogin = Annotated[None, Depends(check_no_login)]
+
 
 def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
@@ -62,7 +64,6 @@ def current_user_id(token: str = Depends(get_token)) -> int:
             status_code=401,
             detail="Недействительный токен",
         )
-
 
 
 UserIdDep = Annotated[int, Depends(current_user_id)]

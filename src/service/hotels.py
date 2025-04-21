@@ -1,10 +1,15 @@
 import logging
 
 
-
-
-from exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, TitleNotExists, \
-    LocationNotExists,  HotelDublicateExeption, HotelDeleteConstraintException
+from exceptions import (
+    check_date_to_after_date_from,
+    ObjectNotFoundException,
+    HotelNotFoundException,
+    TitleNotExists,
+    LocationNotExists,
+    HotelDublicateExeption,
+    HotelDeleteConstraintException,
+)
 from src.schemas.hotels import HotelAdd, HotelPatch, DeleteRoom
 from src.service.base import BaseService
 
@@ -29,11 +34,9 @@ class HotelService(BaseService):
             offset=per_page * (pagination.page - 1),
         )
 
-
     async def get_hotel(self, hotel_id: int):
         await self.get_hotel_with_check(hotel_id)
         return await self.db.hotels.get_one(id=hotel_id)
-
 
     async def add_hotel(self, data: HotelAdd):
         title = data.title
@@ -50,8 +53,6 @@ class HotelService(BaseService):
         except HotelDublicateExeption:
             raise HotelDublicateExeption
 
-
-
     async def path_edit_hotel(self, hotel_id: int, data: HotelPatch):
         await self.get_hotel_with_check(hotel_id)
         if not data.title:
@@ -61,26 +62,18 @@ class HotelService(BaseService):
         await self.db.hotels.edit(data, id=hotel_id)
         await self.db.commit()
 
-
     async def put_edit_hotel(self, hotel_id: int, data: HotelAdd):
         await self.get_hotel_with_check(hotel_id)
         await self.db.hotels.edit(data, id=hotel_id)
         await self.db.commit()
 
-
     async def delete_hotel(self, hotel_id: int):
-
         await self.get_hotel_with_check(hotel_id)
-
-
 
         room = await self.db.rooms.get_all(hotel_id=hotel_id)
         logging.warning(room)
 
-
-        delete_facilities_id = [
-            DeleteRoom(id=r_id.id) for r_id in room
-        ]
+        delete_facilities_id = [DeleteRoom(id=r_id.id) for r_id in room]
         ids_to_delete = [item.id for item in delete_facilities_id]
         await self.db.bookings.delete_bookings(ids_to_delete)
         await self.db.rooms_facilities.delete_facilities_room(ids_to_delete)
@@ -96,7 +89,6 @@ class HotelService(BaseService):
             raise HotelNotFoundException
         except HotelDeleteConstraintException:
             raise HotelDeleteConstraintException
-
 
     async def get_hotel_with_check(self, hotel_id):
         try:

@@ -14,7 +14,6 @@ async def get_facilities(db: DBDep):
     return await FacilitiesService(db).get_facilities()
 
 
-
 @router.post("")
 async def add_facility(db: DBDep, facility_data: FacilityAdd):
     res = await FacilitiesService(db).create_facility(facility_data)

@@ -4,8 +4,14 @@ from fastapi import HTTPException
 from passlib.context import CryptContext
 import jwt
 
-from exceptions import UserAlreadyExists, UserAlreadyExistsException, UserNotExists, IncorrectPassword, \
-    ObjectNotFoundException, IncorrectPasswordhttpException
+from exceptions import (
+    UserAlreadyExists,
+    UserAlreadyExistsException,
+    UserNotExists,
+    IncorrectPassword,
+    ObjectNotFoundException,
+    IncorrectPasswordhttpException,
+)
 from src.config import settings
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.service.base import BaseService
@@ -43,12 +49,13 @@ class AuthService(BaseService):
         except jwt.exceptions.DecodeError:
             raise HTTPException(status_code=401, detail="Неверный токен!")
 
-
     async def register_user(self, data: UserRequestAdd):
         password = data.password.strip()
         if password:
             hashed_password = AuthService().hash_password(data.password)
-            new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
+            new_user_data = UserAdd(
+                email=data.email, hashed_password=hashed_password
+            )
             try:
                 await self.db.users.add_data(new_user_data)
                 await self.db.commit()
@@ -57,20 +64,24 @@ class AuthService(BaseService):
         else:
             raise IncorrectPasswordhttpException
 
-
     async def login_user(self, data: UserRequestAdd):
         password = data.password.strip()
         if password:
-            user = await self.db.users.get_user_with_hashed_password(email=data.email)
+            user = await self.db.users.get_user_with_hashed_password(
+                email=data.email
+            )
             if not user:
                 raise UserNotExists
-            if not AuthService().verify_password(data.password, user.hashed_password):
+            if not AuthService().verify_password(
+                data.password, user.hashed_password
+            ):
                 raise IncorrectPassword
-            access_token = AuthService().create_access_token({"user_id": user.id})
+            access_token = AuthService().create_access_token(
+                {"user_id": user.id}
+            )
             return access_token
         else:
             raise IncorrectPasswordhttpException
-
 
     async def get_me(self, user_id):
         try:
@@ -78,7 +89,3 @@ class AuthService(BaseService):
             return user
         except ObjectNotFoundException:
             raise UserNotExists
-
-
-
-
