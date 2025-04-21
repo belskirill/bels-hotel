@@ -26,7 +26,7 @@ Format:
 
 
 Migrations:
-  stage: migrations
+  stage: migration
   script: docker run --rm --network myNetwork booking-api-image alembic upgrade head
 
 Tests:
