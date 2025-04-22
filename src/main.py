@@ -48,7 +48,12 @@ app.include_router(router_facilities)
 app.include_router(router_images)
 
 
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_headers=["*"],
+    allow_methods=["*"],
+)
 
 
 if __name__ == "__main__":
